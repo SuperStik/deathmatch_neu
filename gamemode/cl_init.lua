@@ -410,6 +410,7 @@ end
 
 local function TextEntryLabel(parent, convar, label)
 	local tlbl = vgui.CreateX("Panel", parent, "DTextEntryLabel")
+	tlbl:SetEnabled(LocalPlayer():GetHost())
 	tlbl:SetTall(16)
 	tlbl:Dock(TOP)
 	tlbl:DockMargin(0, 0, 0, 8)
@@ -427,6 +428,7 @@ end
 
 local function checkbox(parent, convar, text)
 	local button = vgui.Create("DCheckBoxLabel", parent)
+	button:SetEnabled(LocalPlayer():GetHost())
 	button:Dock(TOP)
 	button:DockMargin(0, 0, 0, 8)
 	button:SetConVar(convar)
@@ -453,6 +455,7 @@ function GM:ShowSpare2()
 		checkbox(self.OptionsConf, "dm_allplayermodels", "Allow all Player Models")
 		checkbox(self.OptionsConf, "dm_adminnoclip", "Admin Noclip")
 		local check = vgui.Create("DCheckBoxLabel", self.OptionsConf)
+		check:SetEnabled(LocalPlayer():GetHost())
 		check:Dock(TOP)
 		check:SetConVar("dm_playernoclip")
 		check:SetText("Player Noclip")
