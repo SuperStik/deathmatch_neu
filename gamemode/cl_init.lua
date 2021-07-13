@@ -1,7 +1,5 @@
 include("shared.lua")
-include("cl_scoreboard.lua")
-
-local dm_models = {female08="models/player/Group03/female_02.mdl",female05="models/player/Group01/female_05.mdl",male03="models/player/Group01/male_03.mdl",medic06="models/player/Group03m/male_06.mdl",male13="models/player/Group03/male_04.mdl",medic11="models/player/Group03m/female_02.mdl",male04="models/player/Group01/male_04.mdl",medic14="models/player/Group03m/female_05.mdl",odessa="models/player/odessa.mdl",female11="models/player/Group03/female_05.mdl",female07="models/player/Group03/female_01.mdl",css_guerilla="models/player/guerilla.mdl",combineelite="models/player/combine_super_soldier.mdl",male05="models/player/Group01/male_05.mdl",female06="models/player/Group01/female_06.mdl",medic05="models/player/Group03m/male_05.mdl",male07="models/player/Group01/male_07.mdl",mossmanarctic="models/player/mossman_arctic.mdl",male06="models/player/Group01/male_06.mdl",refugee03="models/player/Group02/male_06.mdl",male10="models/player/Group03/male_01.mdl",breen="models/player/breen.mdl",corpse="models/player/corpse1.mdl",monk="models/player/monk.mdl",female01="models/player/Group01/female_01.mdl",male15="models/player/Group03/male_06.mdl",barney="models/player/barney.mdl",medic15="models/player/Group03m/female_06.mdl",male09="models/player/Group01/male_09.mdl",css_swat="models/player/swat.mdl",female03="models/player/Group01/female_03.mdl",male17="models/player/Group03/male_08.mdl",zombie="models/player/zombie_classic.mdl",female02="models/player/Group01/female_02.mdl",magnusson="models/player/magnusson.mdl",charple="models/player/charple.mdl",eli="models/player/eli.mdl",skeleton="models/player/skeleton.mdl",dod_american="models/player/dod_american.mdl",dod_german="models/player/dod_german.mdl",css_urban="models/player/urban.mdl",css_riot="models/player/riot.mdl",male01="models/player/Group01/male_01.mdl",police="models/player/police.mdl",css_leet="models/player/leet.mdl",alyx="models/player/alyx.mdl",medic08="models/player/Group03m/male_08.mdl",css_gasmask="models/player/gasmask.mdl",zombine="models/player/zombie_soldier.mdl",stripped="models/player/soldier_stripped.mdl",policefem="models/player/police_fem.mdl",kleiner="models/player/kleiner.mdl",male14="models/player/Group03/male_05.mdl",css_arctic="models/player/arctic.mdl",female12="models/player/Group03/female_06.mdl",gman="models/player/gman_high.mdl",female04="models/player/Group01/female_04.mdl",zombiefast="models/player/zombie_fast.mdl",medic02="models/player/Group03m/male_02.mdl",hostage02="models/player/hostage/hostage_02.mdl",medic03="models/player/Group03m/male_03.mdl",combineprison="models/player/combine_soldier_prisonguard.mdl",refugee04="models/player/Group02/male_08.mdl",refugee02="models/player/Group02/male_04.mdl",refugee01="models/player/Group02/male_02.mdl",medic10="models/player/Group03m/female_01.mdl",male02="models/player/Group01/male_02.mdl",male12="models/player/Group03/male_03.mdl",medic07="models/player/Group03m/male_07.mdl",hostage03="models/player/hostage/hostage_03.mdl",female10="models/player/Group03/female_04.mdl",male18="models/player/Group03/male_09.mdl",css_phoenix="models/player/phoenix.mdl",hostage01="models/player/hostage/hostage_01.mdl",medic01="models/player/Group03m/male_01.mdl",hostage04="models/player/hostage/hostage_04.mdl",male08="models/player/Group01/male_08.mdl",medic12="models/player/Group03m/female_03.mdl",male11="models/player/Group03/male_02.mdl",medic13="models/player/Group03m/female_04.mdl",medic09="models/player/Group03m/male_09.mdl",combine="models/player/combine_soldier.mdl",mossman="models/player/mossman.mdl",female09="models/player/Group03/female_03.mdl",chell="models/player/p2_chell.mdl",medic04="models/player/Group03m/male_04.mdl",male16="models/player/Group03/male_07.mdl"}
+local dm_models = include("cl_scoreboard.lua")
 
 local TauntList = {"1: Good God...", "2: Ha ha! Like that?", "3: Oh no...", "4: Here they come!", "5: Over here!", "6: Get the hell out of here!", "7: Help!", "8: Hi", "9: Okay", "0: Incoming!"}
 
@@ -169,16 +167,16 @@ function GM:ShowHelp()
 	text:SetWrap(true)
 	text:SetContentAlignment(8)
 	local btn = vgui.Create("DButton", self.HelpFrame)
-	local widthd3 = width/3
+	local widthd3 = width / 3
 	btn:SetTall(30)
 	btn:Dock(TOP)
-	btn:DockMargin(widthd3,4,widthd3,0)
+	btn:DockMargin(widthd3, 4, widthd3, 0)
 	btn:SetText("Close")
 	btn.DoClick = self.HelpFrame.btnClose.DoClick
 	local check = vgui.Create("DCheckBoxLabel", self.HelpFrame)
 	check:SetText("Do not auto-show again")
 	check:AlignRight()
-	check:SetPos(check:GetX()-4, 118)
+	check:SetPos(check:GetX() - 4, 118)
 	check:SetConVar("dm_hidehelp")
 	text:SetAutoStretchVertical(true)
 	self.HelpFrame:InvalidateLayout(true)
@@ -245,7 +243,7 @@ function GM:ShowTeam()
 		icon.playermodel = k
 		icon.model_path = v
 
-		icon.OpenMenu = function(button)
+		icon.OpenMenu = function(ico)
 			local menu = DermaMenu()
 
 			menu:AddOption("#spawnmenu.menu.copy", function()
@@ -365,7 +363,7 @@ function GM:ShowSpare1()
 	self.TauntTextPanel:SetSize(ScrW() / 8, 265)
 	self.TauntTextPanel:SetPos(25, ScrH() / 6)
 
-	self.TauntTextPanel.Paint = function(self, w, h)
+	self.TauntTextPanel.Paint = function(pnl, w, h)
 		draw.RoundedBox(8, 0, 0, w, h, boxColor)
 	end
 
@@ -401,10 +399,8 @@ end
 local function layout(pnl)
 	local txt = pnl:GetChild(0)
 	local label = pnl:GetChild(1)
-
 	txt:SetSize(48, 16)
 	txt:SetPos(0, 0)
-
 	label:SetX(57)
 	label:SizeToContents()
 end
@@ -413,11 +409,12 @@ local function guardrail(pnl, txt)
 	if txt == "" then
 		pnl:SetText(0)
 	end
+
 	pnl:UpdateConvarValue()
 	pnl:OnValueChange(pnl:GetText())
 end
 
-local function TextEntryLabel(parent, convar, label)
+local function TextEntryLabel(parent, convar, text)
 	local tlbl = vgui.CreateX("Panel", parent, "DTextEntryLabel")
 	local ishost = LocalPlayer():GetHost()
 	tlbl:SetEnabled(ishost)
@@ -431,10 +428,11 @@ local function TextEntryLabel(parent, convar, label)
 	txt:SetConVar(convar)
 	txt:SetNumeric(true)
 	txt.OnEnter = guardrail
-	local label = Label(label, tlbl)
+	local label = Label(text, tlbl)
 	label:SetEnabled(ishost)
 	label:SetX(57)
 	label:SizeToContents()
+
 	return tlbl
 end
 
@@ -445,6 +443,7 @@ local function checkbox(parent, convar, text)
 	button:DockMargin(0, 0, 0, 8)
 	button:SetConVar(convar)
 	button:SetText(text)
+
 	return button
 end
 
