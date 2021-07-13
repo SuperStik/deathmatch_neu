@@ -1,0 +1,9 @@
+#
+# These files aren't fully sent to the client because they
+# should never change. Instead we send the CRC of this file
+# so the client can load their version - and we know it's kewl.
+#
+gamemodes\deathmatch_neu\gamemode\cl_init.lua
+gamemodes\deathmatch_neu\gamemode\shared.lua
+gamemodes\deathmatch_neu\gamemode\cl_scoreboard.lua
+gamemodes\deathmatch_neu\gamemode\player_class\player_deathmatch.lua

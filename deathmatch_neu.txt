@@ -1,0 +1,69 @@
+"deathmatch_neu"
+{
+	"title"		"Deathmatch"
+	"base"		"base"
+	"category"	"pvp"
+	"maps"		"^rpdm_"
+	"menusystem"	"1"
+	"settings"
+	{
+		1
+		{
+			"name"	"dm_timer"
+			"text"	"Round Timer:"
+			"help"	"If not 0, the round will end after this many seconds"
+			"type"	"Numeric"
+			"default"	"600"
+			"singleplayer"	"1"
+			
+		}
+		2
+		{
+			"name"	"dm_medpacktimer"
+			"text"	"Medpack Timer:"
+			"help"	"If not 0, all dropped medpacks will despawn after the set amount of seconds. -1 to stop despawning"
+			"type"	"Numeric"
+			"default"	"60"
+			"singleplayer"	"1"
+		}
+		3
+		{
+			"name"	"dm_infinite"
+			"text"	"Infinite mode"
+			"help"	"If set, the game will have an infinite round, and the round timer will act as a cleanup timer"
+			"type"	"CheckBox"
+			"default"	"1"
+			"singleplayer"	"1"
+		}
+		4
+		{
+			"name"	"dm_weapons"
+			"text"	"Give weapons on spawn"
+			"help"	"If enabled, each player will receive weapons on each spawn"
+			"type"	"CheckBox"
+			"default"	"1"
+			"singleplayer"	"1"
+			
+		}
+		5
+		{
+			"name"	"dm_grenades"
+			"text"	"Allow grenades"
+			"help"	"If enabled, players receive grenades on each spawn"
+			"type"	"CheckBox"
+			"default"	"1"
+			"singleplayer"	"1"
+			
+		}
+		6
+		{
+			"name"	"dm_allplayermodels"
+			"text"	"Allow all playermodels"
+			"help"	"If enabled, players can use custom server-side models"
+			"type"	"CheckBox"
+			"default"	"0"
+			"singleplayer"	"1"
+			
+		}
+	}
+}
