@@ -127,6 +127,7 @@ function GM:ShowSpare1(ply)
 end
 
 function GM:ShowSpare2(ply)
+	ply:SetHost(ply:IsListenServerHost())
 	ply:SendLua("hook.Run('ShowSpare2')")
 end
 
@@ -170,7 +171,6 @@ end
 
 function GM:PlayerInitialSpawn(ply)
 	ply:SetTeam(TEAM_UNASSIGNED)
-	ply:SetHost(ply:IsListenServerHost())
 	if ply:GetInfo("dm_hidehelp") == "0" then
 		self:ShowHelp(ply)
 	end
