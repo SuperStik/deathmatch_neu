@@ -38,43 +38,41 @@ end
 -- Ret1:
 --
 function PLAYER:Loadout()
-
 	if not dm_weapons:GetBool() then return end
-	self.Player:Give( "weapon_pistol" )
-	self.Player:Give( "weapon_crowbar" )
-	self.Player:Give( "weapon_357" )
-	self.Player:Give( "weapon_crossbow" )
-	self.Player:Give( "weapon_shotgun" )
-	self.Player:Give( "weapon_smg1" )
-	self.Player:Give( "weapon_physcannon" )
+	self.Player:Give("weapon_pistol")
+	self.Player:Give("weapon_crowbar")
+	self.Player:Give("weapon_357")
+	self.Player:Give("weapon_crossbow")
+	self.Player:Give("weapon_shotgun")
+	self.Player:Give("weapon_smg1")
+	self.Player:Give("weapon_physcannon")
 	if dm_grenades:GetBool() then
-		self.Player:Give( "weapon_frag" )
-		self.Player:GiveAmmo( 4, "Grenade", true )
+		self.Player:Give("weapon_frag")
+		self.Player:GiveAmmo(4, "Grenade", true)
 	end
-	self.Player:GiveAmmo( 50, "Pistol", true )
-	self.Player:GiveAmmo( 2, "SMG1_Grenade", true )
-	self.Player:GiveAmmo( 12, "357", true )
-	self.Player:GiveAmmo( 75, "SMG1", true )
-	self.Player:GiveAmmo( 20, "Buckshot", true )
-	self.Player:GiveAmmo( 12, "XBowBolt", true )
-
+	self.Player:GiveAmmo(50, "Pistol", true)
+	self.Player:GiveAmmo(2, "SMG1_Grenade", true)
+	self.Player:GiveAmmo(12, "357", true)
+	self.Player:GiveAmmo(75, "SMG1", true)
+	self.Player:GiveAmmo(20, "Buckshot", true)
+	self.Player:GiveAmmo(12, "XBowBolt", true)
 end
 
 function PLAYER:SetModel()
-	local cl_playermodel = self.Player:GetInfo( "cl_playermodel" )
-	local cl_playercolor = self.Player:GetInfo( "cl_playercolor" )
-	local cl_playerskin = self.Player:GetInfoNum( "cl_playerskin",0)
-	local cl_playerbodygroups = self.Player:GetInfo( "cl_playerbodygroups" )
+	local cl_playermodel = self.Player:GetInfo("cl_playermodel")
+	local cl_playercolor = self.Player:GetInfo("cl_playercolor")
+	local cl_playerskin = self.Player:GetInfoNum( "cl_playerskin", 0)
+	local cl_playerbodygroups = self.Player:GetInfo("cl_playerbodygroups")
 	if not (dm_allplayermodels:GetBool() or isstring(dm_models[cl_playermodel])) then cl_playermodel = "kleiner" end
 	--local col = Vector(cl_playercolor)
-	local modelname = player_manager.TranslatePlayerModel( cl_playermodel )
-	util.PrecacheModel( modelname )
-	self.Player:SetModel( modelname )
+	local modelname = player_manager.TranslatePlayerModel(cl_playermodel)
+	util.PrecacheModel(modelname)
+	self.Player:SetModel(modelname)
 	self.Player:SetSkin(cl_playerskin)
-	if ( cl_playerbodygroups == nil ) then cl_playerbodygroups = "" end
-	local cl_playerbodygroups = string.Explode( " ", cl_playerbodygroups )
+	if cl_playerbodygroups == nil then cl_playerbodygroups = "" end
+	local cl_playerbodygroups = string.Explode(" ", cl_playerbodygroups)
 	for k = 0, self.Player:GetNumBodyGroups() - 1 do
-		self.Player:SetBodygroup( k, tonumber( cl_playerbodygroups[ k + 1 ] ) or 0 )
+		self.Player:SetBodygroup(k, tonumber(cl_playerbodygroups[k + 1]) or 0)
 	end
 	self.Player:SetupHands()
 	self.Player:SetPlayerColor( Vector(cl_playercolor) )
@@ -93,18 +91,16 @@ end
 
 function PLAYER:ShouldDrawLocal() 
 	local bool = self.Player:IsPlayingTaunt()
-	if ( self.TauntCam:ShouldDrawLocalPlayer( self.Player, bool ) ) then return bool end
+	if self.TauntCam:ShouldDrawLocalPlayer(self.Player, bool) then return bool end
 end
 
 function PLAYER:CreateMove( cmd )
-
-	if ( self.TauntCam:CreateMove( cmd, self.Player, self.Player:IsPlayingTaunt() ) ) then return true end
-
+	if self.TauntCam:CreateMove(cmd, self.Player, self.Player:IsPlayingTaunt()) then return true end
 end
 
 function PLAYER:CalcView( view )
 	local bool = self.Player:IsPlayingTaunt()
-	if ( self.TauntCam:CalcView( view, self.Player, bool ) ) then return bool end
+	if self.TauntCam:CalcView(view, self.Player, bool) then return bool end
 end
 
 player_manager.RegisterClass( "player_deathmatch", PLAYER, "player_default" )
