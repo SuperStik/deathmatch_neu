@@ -98,11 +98,14 @@ local dm_models = {
 	male16 = "models/player/Group03/male_07.mdl"
 }
 
+if CLIENT then
+	dm_models = nil
+end
+
 local dm_weapons = GetConVar("dm_weapons")
 local dm_grenades = GetConVar("dm_grenades")
 local dm_allplayermodels = GetConVar("dm_allplayermodels")
 local dm_medpacktimer = GetConVar("dm_medpacktimer")
-local testvec = Vector(0, 300, 0)
 
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Bool", 0, "Host") --shit way to see who is listen server host
@@ -164,7 +167,7 @@ function PLAYER:SetModel()
 		cl_playerbodygroups = ""
 	end
 
-	local cl_playerbodygroups = string.Explode(" ", cl_playerbodygroups)
+	cl_playerbodygroups = string.Explode(" ", cl_playerbodygroups)
 
 	for k = 0, self.Player:GetNumBodyGroups() - 1 do
 		self.Player:SetBodygroup(k, tonumber(cl_playerbodygroups[k + 1]) or 0)
@@ -200,4 +203,3 @@ function PLAYER:CalcView(view)
 end
 
 player_manager.RegisterClass("player_deathmatch", PLAYER, "player_default")
-return dm_models
