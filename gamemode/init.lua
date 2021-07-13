@@ -2,6 +2,7 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("cl_scoreboard.lua")
 include("shared.lua")
 util.AddNetworkString("SendTaunt")
+util.AddNetworkString("PlayerInit")
 
 local clean = GetConVar("dm_timer")
 local infinite = GetConVar("dm_infinite")
@@ -127,7 +128,6 @@ function GM:ShowSpare1(ply)
 end
 
 function GM:ShowSpare2(ply)
-	ply:SetHost(ply:IsListenServerHost())
 	ply:SendLua("hook.Run('ShowSpare2')")
 end
 
@@ -136,8 +136,10 @@ function GM:PlayerVoice(ply,num)
 end
 
 function GM:InitPostEntity()
-	RunConsoleCommand("sk_plr_dmg_crowbar","25")
-	RunConsoleCommand("sk_npc_dmg_crowbar","10")
+	RunConsoleCommand("sk_plr_dmg_crowbar", 25)
+	RunConsoleCommand("sk_npc_dmg_crowbar", 10)
+	self.OldDeploySpeed = GetConVarNumber("sv_defaultdeployspeed")
+	RunConsoleCommand("sv_defaultdeployspeed", 1)
 end
 
 function GM:Initialize()
@@ -165,8 +167,9 @@ cvars.AddChangeCallback("dm_infinite",function()
 end)
 
 function GM:ShutDown()
-	RunConsoleCommand("sk_plr_dmg_crowbar","10")
-	RunConsoleCommand("sk_npc_dmg_crowbar","5")
+	RunConsoleCommand("sk_plr_dmg_crowbar", 10)
+	RunConsoleCommand("sk_npc_dmg_crowbar", 5)
+	RunConsoleCommand("sv_defaultdeployspeed", self.OldDeploySpeed)
 end
 
 function GM:PlayerInitialSpawn(ply)
@@ -175,3 +178,11 @@ function GM:PlayerInitialSpawn(ply)
 		self:ShowHelp(ply)
 	end
 end
+
+function GM:PlayerInit(ply)
+	ply:SetHost(ply:IsListenServerHost())
+end
+
+net.Receive("PlayerInit", function(len, ply)
+	hook.Run("PlayerInit", ply)
+end)

@@ -140,6 +140,14 @@ function GM:Initialize()
 end
 
 --[[---------------------------------------------------------
+	Name: gamemode:InitPostEntity()
+-----------------------------------------------------------]]
+function GM:InitPostEntity()
+	net.Start("PlayerInit")
+	net.SendToServer()
+end
+
+--[[---------------------------------------------------------
 	Name: gamemode:ShowHelp()
 -----------------------------------------------------------]]
 function GM:ShowHelp()
@@ -410,17 +418,20 @@ end
 
 local function TextEntryLabel(parent, convar, label)
 	local tlbl = vgui.CreateX("Panel", parent, "DTextEntryLabel")
-	tlbl:SetEnabled(LocalPlayer():GetHost())
+	local ishost = LocalPlayer():GetHost()
+	tlbl:SetEnabled(ishost)
 	tlbl:SetTall(16)
 	tlbl:Dock(TOP)
 	tlbl:DockMargin(0, 0, 0, 8)
 	tlbl.PerformLayout = layout
 	local txt = vgui.Create("DTextEntry", tlbl)
+	txt:SetEnabled(ishost)
 	txt:SetSize(48, 16)
 	txt:SetConVar(convar)
 	txt:SetNumeric(true)
 	txt.OnEnter = guardrail
 	local label = Label(label, tlbl)
+	label:SetEnabled(ishost)
 	label:SetX(57)
 	label:SizeToContents()
 	return tlbl
