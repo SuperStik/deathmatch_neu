@@ -5,6 +5,7 @@ util.AddNetworkString("SendTaunt")
 util.AddNetworkString("PlayerInit")
 local clean = GetConVar("dm_timer")
 local infinite = GetConVar("dm_infinite")
+local customweps = GetConVar("dm_customweapons")
 
 local tauntList = {"npc_citizen.goodgod", "npc_citizen.likethat", "npc_citizen.ohno", "npc_citizen.heretheycome01", "npc_citizen.overhere01", "npc_citizen.gethellout", "npc_citizen.help01", "npc_citizen.hi0", "npc_citizen.ok0", "npc_citizen.incoming02"}
 

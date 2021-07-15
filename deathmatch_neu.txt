@@ -58,6 +58,15 @@
 		}
 		6
 		{
+			"name"	"dm_customweapons"
+			"text"	"Use custom weapon scripts"
+			"help"	"Player load-out is assigned by data/deathmatch/, not the code"
+			"type"	"CheckBox"
+			"default"	"0"
+			"singleplayer"	"1"
+		}
+		7
+		{
 			"name"	"dm_allplayermodels"
 			"text"	"Allow all playermodels"
 			"help"	"If enabled, players can use custom server-side models"
