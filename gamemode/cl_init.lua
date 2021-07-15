@@ -1,4 +1,5 @@
 include("shared.lua")
+
 local dm_models = {
 	female08 = "models/player/Group03/female_02.mdl",
 	female05 = "models/player/Group01/female_05.mdl",
@@ -94,9 +95,7 @@ local TauntList = {"1: Good God...", "2: Ha ha! Like that?", "3: Oh no...", "4: 
 local convartbl = {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}
 
 local infinite = CreateConVar("dm_infinite", "1", convartbl, "If set, the game will have an infinite round, and the round timer will act as a cleanup timer")
-
 local customweps = CreateConVar("dm_customweapons", "0", convartbl, "Player load-out is assigned by data/deathmatch/, not the code")
-
 local dm_allplayermodels = CreateConVar("dm_allplayermodels", "0", convartbl, "If enabled, players can use custom server-side models")
 
 local cl_playercolor = CreateConVar("cl_playercolor", "0.24 0.34 0.41", {FCVAR_ARCHIVE, FCVAR_USERINFO, FCVAR_DONTRECORD}, "The value is a Vector - so between 0-1 - not between 0-255")
@@ -293,7 +292,7 @@ function GM:ShowTeam()
 	local teampanel = vgui.Create("DPanel")
 	teampanel:Dock(FILL)
 	teampanel:DockPadding(8, 8, 8, 8)
-	local parentpanel = teampanel:Add("Panel")
+	local parentpanel = vgui.CreateX("Panel", teampanel)
 	parentpanel:Dock(TOP)
 	parentpanel:DockMargin(0, 0, 0, 4)
 	parentpanel:SetTall(math.min(self.TeamSelectFrame:GetTall() / 3, 260))
@@ -528,7 +527,7 @@ local function TextEntryLabel(parent, convar, text)
 end
 
 local function checkbox(parent, convar, text)
-	local button = vgui.Create("DCheckBoxLabel", parent)
+	local button = parent:Add("DCheckBoxLabel")
 	button:SetEnabled(LocalPlayer():GetHost())
 	button:Dock(TOP)
 	button:DockMargin(0, 0, 0, 8)
@@ -536,6 +535,46 @@ local function checkbox(parent, convar, text)
 	button:SetText(text)
 
 	return button
+end
+
+local function buttonThink(pnl)
+	local bool = LocalPlayer():GetHost() and customweps:GetBool()
+	pnl:SetEnabled(bool)
+	pnl:SetCursor(bool and "hand" or "arrow")
+end
+
+local function checkThink(pnl)
+	pnl:SetEnabled(LocalPlayer():GetHost() and not customweps:GetBool())
+end
+
+local function buttonClick(pnl)
+	pnl:GetParent():Close()
+	local frame = vgui.Create("DFrame", nil, "CustomWeapons")
+	frame:SetSize(math.min(ScrW() - 64, 512), ScrH())
+	frame:SetTitle("Custom Weapon Scripts")
+	local Close = frame.Close
+
+	frame.Close = function(self)
+		Close(self)
+		hook.Run("ShowSpare2")
+	end
+
+	local weplbl = Label("Custom Weapons", frame)
+	weplbl:Dock(TOP)
+	weplbl:DockMargin(0, 0, 0, 8)
+	local weptxt = frame:Add("DTextEntry")
+	weptxt:Dock(TOP)
+	weptxt:DockMargin(0, 0, 0, 8)
+	weptxt:SetPlaceholderText("weapon_physcannon;weapon_pistol")
+	local ammlbl = Label("Custom Ammo", frame)
+	ammlbl:Dock(TOP)
+	ammlbl:DockMargin(0, 0, 0, 8)
+	local ammtxt = frame:Add("DTextEntry")
+	ammtxt:Dock(TOP)
+	frame:InvalidateLayout(true)
+	frame:SizeToChildren(nil, true)
+	frame:Center()
+	frame:MakePopup()
 end
 
 --[[---------------------------------------------------------
@@ -553,11 +592,18 @@ function GM:ShowSpare2()
 		TextEntryLabel(self.OptionsConf, "dm_medpacktimer", "Medpack timer")
 		checkbox(self.OptionsConf, "dm_infinite", "Infinite mode")
 		checkbox(self.OptionsConf, "dm_weapons", "Spawn with weapons")
-		checkbox(self.OptionsConf, "dm_grenades", "Spawn with grenades")
+		local grenades = checkbox(self.OptionsConf, "dm_grenades", "Spawn with grenades")
+		grenades.Think = checkThink
 		checkbox(self.OptionsConf, "dm_customweapons", "Use custom weapons")
+		local button = vgui.Create("DButton", self.OptionsConf)
+		button:Dock(TOP)
+		button:DockMargin(0, 0, 0, 8)
+		button:SetText("Open custom weapon scripts")
+		button.Think = buttonThink
+		button.DoClick = buttonClick
 		checkbox(self.OptionsConf, "dm_allplayermodels", "Allow all player models")
 		checkbox(self.OptionsConf, "dm_adminnoclip", "Admin noclip")
-		local check = vgui.Create("DCheckBoxLabel", self.OptionsConf)
+		local check = self.OptionsConf:Add("DCheckBoxLabel")
 		check:SetEnabled(LocalPlayer():GetHost() and cheats:GetBool())
 		check:Dock(TOP)
 		check:SetConVar("dm_playernoclip")
