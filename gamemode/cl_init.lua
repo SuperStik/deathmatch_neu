@@ -95,6 +95,7 @@ local TauntList = {"1: Good God...", "2: Ha ha! Like that?", "3: Oh no...", "4: 
 local convartbl = {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}
 
 local infinite = CreateConVar("dm_infinite", "1", convartbl, "If set, the game will have an infinite round, and the round timer will act as a cleanup timer")
+local dm_weapons = CreateConVar("dm_weapons", "1", convartbl, "If enabled, each player will receive weapons on each spawn")
 local customweps = CreateConVar("dm_customweapons", "0", convartbl, "Player load-out is assigned by data/deathmatch/, not the code")
 local dm_allplayermodels = CreateConVar("dm_allplayermodels", "0", convartbl, "If enabled, players can use custom server-side models")
 
@@ -538,13 +539,25 @@ local function checkbox(parent, convar, text)
 end
 
 local function buttonThink(pnl)
-	local bool = LocalPlayer():GetHost() and customweps:GetBool()
+	local bool = LocalPlayer():GetHost() and customweps:GetBool() and dm_weapons:GetBool()
 	pnl:SetEnabled(bool)
 	pnl:SetCursor(bool and "hand" or "arrow")
 end
 
 local function checkThink(pnl)
-	pnl:SetEnabled(LocalPlayer():GetHost() and not customweps:GetBool())
+	pnl:SetEnabled(LocalPlayer():GetHost() and dm_weapons:GetBool() and not customweps:GetBool())
+end
+
+local function weaponThink(pnl)
+	pnl:SetEnabled(LocalPlayer():GetHost() and dm_weapons:GetBool())
+end
+
+local function writeCustom(pnl, txt)
+	if txt == "" then
+		txt = pnl:GetPlaceholderText()
+	end
+
+	file.Write("deathmatch/custom" .. pnl.CustomMode .. ".txt", txt)
 end
 
 local function buttonClick(pnl)
@@ -554,23 +567,52 @@ local function buttonClick(pnl)
 	frame:SetTitle("Custom Weapon Scripts")
 	local Close = frame.Close
 
-	frame.Close = function(self)
+	function frame:Close()
 		Close(self)
 		hook.Run("ShowSpare2")
 	end
 
 	local weplbl = Label("Custom Weapons", frame)
 	weplbl:Dock(TOP)
-	weplbl:DockMargin(0, 0, 0, 8)
+	weplbl:DockMargin(0, 0, 0, 4)
 	local weptxt = frame:Add("DTextEntry")
 	weptxt:Dock(TOP)
 	weptxt:DockMargin(0, 0, 0, 8)
-	weptxt:SetPlaceholderText("weapon_physcannon;weapon_pistol")
+	weptxt:SetPlaceholderText("weapon_physcannon;weapon_pistol;weapon_smg1")
+	weptxt:SetText(file.Read("deathmatch/customweapons.txt", "DATA"))
+	weptxt.CustomMode = "weapons"
+	weptxt.OnValueChange = writeCustom
+	local wepbtn = frame:Add("DButton")
+	wepbtn:Dock(TOP)
+	wepbtn:DockMargin(0, 0, 0, 8)
+	wepbtn:SetText("Print weapon classes and names to the console")
+
+	function wepbtn:DoClick()
+		for k, v in pairs(list.GetForEdit("Weapon")) do
+			MsgN(k .. ": " .. v.PrintName)
+		end
+	end
+
 	local ammlbl = Label("Custom Ammo", frame)
 	ammlbl:Dock(TOP)
-	ammlbl:DockMargin(0, 0, 0, 8)
+	ammlbl:DockMargin(0, 0, 0, 4)
 	local ammtxt = frame:Add("DTextEntry")
 	ammtxt:Dock(TOP)
+	ammtxt:DockMargin(0, 0, 0, 8)
+	ammtxt:SetPlaceholderText("Pistol:50;SMG1:75;SMG1_Grenade:2")
+	ammtxt:SetText(file.Read("deathmatch/customammo.txt", "DATA"))
+	ammtxt.CustomMode = "ammo"
+	ammtxt.OnValueChange = writeCustom
+	local ammbtn = frame:Add("DButton")
+	ammbtn:Dock(TOP)
+	ammbtn:SetText("Print ammo types to the console")
+
+	function ammbtn:DoClick()
+		for k, v in ipairs(game.GetAmmoTypes()) do
+			MsgN(v)
+		end
+	end
+
 	frame:InvalidateLayout(true)
 	frame:SizeToChildren(nil, true)
 	frame:Center()
@@ -592,9 +634,8 @@ function GM:ShowSpare2()
 		TextEntryLabel(self.OptionsConf, "dm_medpacktimer", "Medpack timer")
 		checkbox(self.OptionsConf, "dm_infinite", "Infinite mode")
 		checkbox(self.OptionsConf, "dm_weapons", "Spawn with weapons")
-		local grenades = checkbox(self.OptionsConf, "dm_grenades", "Spawn with grenades")
-		grenades.Think = checkThink
-		checkbox(self.OptionsConf, "dm_customweapons", "Use custom weapons")
+		checkbox(self.OptionsConf, "dm_grenades", "Spawn with grenades").Think = checkThink
+		checkbox(self.OptionsConf, "dm_customweapons", "Use custom weapons").Think = weaponThink
 		local button = vgui.Create("DButton", self.OptionsConf)
 		button:Dock(TOP)
 		button:DockMargin(0, 0, 0, 8)

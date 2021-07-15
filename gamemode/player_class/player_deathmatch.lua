@@ -106,6 +106,7 @@ local dm_weapons = GetConVar("dm_weapons")
 local dm_grenades = GetConVar("dm_grenades")
 local dm_allplayermodels = GetConVar("dm_allplayermodels")
 local dm_medpacktimer = GetConVar("dm_medpacktimer")
+local customweps = GetConVar("dm_customweapons")
 
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Bool", 0, "Host") --shit way to see who is listen server host
@@ -124,27 +125,45 @@ end
 -- Arg1:
 -- Ret1:
 --
-function PLAYER:Loadout()
-	if not dm_weapons:GetBool() then return end
-	self.Player:Give("weapon_pistol")
-	self.Player:Give("weapon_crowbar")
-	self.Player:Give("weapon_357")
-	self.Player:Give("weapon_crossbow")
-	self.Player:Give("weapon_shotgun")
-	self.Player:Give("weapon_smg1")
-	self.Player:Give("weapon_physcannon")
-
-	if dm_grenades:GetBool() then
-		self.Player:Give("weapon_frag")
-		self.Player:GiveAmmo(4, "Grenade", true)
+local function readCustom(ply)
+	for k, v in ipairs(string.Explode(";", file.Read("deathmatch/customweapons.txt", "DATA"))) do
+		ply:Give(v)
 	end
 
-	self.Player:GiveAmmo(50, "Pistol", true)
-	self.Player:GiveAmmo(2, "SMG1_Grenade", true)
-	self.Player:GiveAmmo(12, "357", true)
-	self.Player:GiveAmmo(75, "SMG1", true)
-	self.Player:GiveAmmo(20, "Buckshot", true)
-	self.Player:GiveAmmo(12, "XBowBolt", true)
+	for k, v in ipairs(string.Explode(";", file.Read("deathmatch/customammo.txt", "DATA"))) do
+		v = string.Explode(":", v)
+		ply:GiveAmmo(tonumber(v[2]), v[1], true)
+	end
+end
+
+function PLAYER:Loadout()
+	if not dm_weapons:GetBool() then return end
+
+	if customweps:GetBool() then
+		if not pcall(readCustom, self.Player) then
+			ErrorNoHalt("Custom weapon or ammo configuration is incorrect! Check the deathmatch configuration!")
+		end
+	else
+		self.Player:Give("weapon_pistol")
+		self.Player:Give("weapon_crowbar")
+		self.Player:Give("weapon_357")
+		self.Player:Give("weapon_crossbow")
+		self.Player:Give("weapon_shotgun")
+		self.Player:Give("weapon_smg1")
+		self.Player:Give("weapon_physcannon")
+
+		if dm_grenades:GetBool() then
+			self.Player:Give("weapon_frag")
+			self.Player:GiveAmmo(4, "Grenade", true)
+		end
+
+		self.Player:GiveAmmo(50, "Pistol", true)
+		self.Player:GiveAmmo(2, "SMG1_Grenade", true)
+		self.Player:GiveAmmo(12, "357", true)
+		self.Player:GiveAmmo(75, "SMG1", true)
+		self.Player:GiveAmmo(20, "Buckshot", true)
+		self.Player:GiveAmmo(12, "XBowBolt", true)
+	end
 end
 
 function PLAYER:SetModel()

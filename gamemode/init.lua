@@ -5,9 +5,20 @@ util.AddNetworkString("SendTaunt")
 util.AddNetworkString("PlayerInit")
 local clean = GetConVar("dm_timer")
 local infinite = GetConVar("dm_infinite")
-local customweps = GetConVar("dm_customweapons")
 
 local tauntList = {"npc_citizen.goodgod", "npc_citizen.likethat", "npc_citizen.ohno", "npc_citizen.heretheycome01", "npc_citizen.overhere01", "npc_citizen.gethellout", "npc_citizen.help01", "npc_citizen.hi0", "npc_citizen.ok0", "npc_citizen.incoming02"}
+
+if not file.Exists("deathmatch/", "DATA") then
+	file.CreateDir("deathmatch")
+end
+
+if not file.Exists("deathmatch/customweapons.txt", "DATA") then
+	file.Write("deathmatch/customweapons.txt", "weapon_physcannon;weapon_pistol;weapon_smg1")
+end
+
+if not file.Exists("deathmatch/customammo.txt", "DATA") then
+	file.Write("deathmatch/customammo.txt", "Pistol:50;SMG1:75;SMG1_Grenade:2")
+end
 
 local function cleanMap(str, bool)
 	if infinite:GetBool() or bool then
