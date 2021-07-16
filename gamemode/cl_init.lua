@@ -96,7 +96,7 @@ local convartbl = {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}
 
 local infinite = CreateConVar("dm_infinite", "1", convartbl, "If set, the game will have an infinite round, and the round timer will act as a cleanup timer")
 local dm_weapons = CreateConVar("dm_weapons", "1", convartbl, "If enabled, each player will receive weapons on each spawn")
-local customweps = CreateConVar("dm_customweapons", "0", convartbl, "Player load-out is assigned by data/deathmatch/, not the code")
+local customweps = CreateConVar("dm_customloadout", "0", convartbl, "Player load-out is assigned by data/deathmatch/, not the code")
 local dm_allplayermodels = CreateConVar("dm_allplayermodels", "0", convartbl, "If enabled, players can use custom server-side models")
 
 local cl_playercolor = CreateConVar("cl_playercolor", "0.24 0.34 0.41", {FCVAR_ARCHIVE, FCVAR_USERINFO, FCVAR_DONTRECORD}, "The value is a Vector - so between 0-1 - not between 0-255")
@@ -509,12 +509,14 @@ local function TextEntryLabel(parent, convar, text)
 	local tlbl = vgui.CreateX("Panel", parent, "DTextEntryLabel")
 	local ishost = LocalPlayer():GetHost()
 	tlbl:SetEnabled(ishost)
+	tlbl:SetAlpha(ishost and 255 or 75)
 	tlbl:SetTall(16)
 	tlbl:Dock(TOP)
 	tlbl:DockMargin(0, 0, 0, 8)
 	tlbl.PerformLayout = layout
-	local txt = vgui.Create("DTextEntry", tlbl)
+	local txt = tlbl:Add("DTextEntry")
 	txt:SetEnabled(ishost)
+	txt:SetEditable(ishost)
 	txt:SetSize(48, 16)
 	txt:SetConVar(convar)
 	txt:SetNumeric(true)
@@ -562,9 +564,9 @@ end
 
 local function buttonClick(pnl)
 	pnl:GetParent():Close()
-	local frame = vgui.Create("DFrame", nil, "CustomWeapons")
+	local frame = vgui.Create("DFrame", nil, "CustomLoadout")
 	frame:SetSize(math.min(ScrW() - 64, 512), ScrH())
-	frame:SetTitle("Custom Weapon Scripts")
+	frame:SetTitle("Custom Loadout Settings")
 	local Close = frame.Close
 
 	function frame:Close()
@@ -635,11 +637,11 @@ function GM:ShowSpare2()
 		checkbox(self.OptionsConf, "dm_infinite", "Infinite mode")
 		checkbox(self.OptionsConf, "dm_weapons", "Spawn with weapons")
 		checkbox(self.OptionsConf, "dm_grenades", "Spawn with grenades").Think = checkThink
-		checkbox(self.OptionsConf, "dm_customweapons", "Use custom weapons").Think = weaponThink
+		checkbox(self.OptionsConf, "dm_customloadout", "Use custom weapons").Think = weaponThink
 		local button = vgui.Create("DButton", self.OptionsConf)
 		button:Dock(TOP)
 		button:DockMargin(0, 0, 0, 8)
-		button:SetText("Open custom weapon scripts")
+		button:SetText("Open custom loadout settings")
 		button.Think = buttonThink
 		button.DoClick = buttonClick
 		checkbox(self.OptionsConf, "dm_allplayermodels", "Allow all player models")

@@ -106,7 +106,7 @@ local dm_weapons = GetConVar("dm_weapons")
 local dm_grenades = GetConVar("dm_grenades")
 local dm_allplayermodels = GetConVar("dm_allplayermodels")
 local dm_medpacktimer = GetConVar("dm_medpacktimer")
-local customweps = GetConVar("dm_customweapons")
+local customloadout = GetConVar("dm_customloadout")
 
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Bool", 0, "Host") --shit way to see who is listen server host
@@ -139,7 +139,7 @@ end
 function PLAYER:Loadout()
 	if not dm_weapons:GetBool() then return end
 
-	if customweps:GetBool() then
+	if customloadout:GetBool() then
 		if not pcall(readCustom, self.Player) then
 			ErrorNoHalt("Custom weapon or ammo configuration is incorrect! Check the deathmatch configuration!")
 		end

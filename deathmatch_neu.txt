@@ -58,9 +58,9 @@
 		}
 		6
 		{
-			"name"	"dm_customweapons"
-			"text"	"Use custom weapon scripts"
-			"help"	"Player load-out is assigned by data/deathmatch/, not the code"
+			"name"	"dm_customloadout"
+			"text"	"Use custom loadout"
+			"help"	"Player loadout is assigned in data/deathmatch/, not internally"
 			"type"	"CheckBox"
 			"default"	"0"
 			"singleplayer"	"1"
