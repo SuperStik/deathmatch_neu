@@ -1,4 +1,5 @@
 include("shared.lua")
+include("cl_scoreboard")
 
 local dm_models = {
 	female08 = "models/player/Group03/female_02.mdl",
