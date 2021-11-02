@@ -147,6 +147,14 @@ end
 function GM:ShowSpare1(ply)
 	ply:SetShowTaunts(true)
 	ply:SendLua("hook.Run('ShowSpare1')")
+	local time = "HideSpare1" .. ply:EntIndex()
+	if timer.Exists(time) then
+		timer.Adjust(time, 2)
+	else
+		timer.Create(time, 2, 1, function()
+			ply:SetShowTaunts(false)
+		end)
+	end
 end
 
 function GM:ShowSpare2(ply)
@@ -158,10 +166,11 @@ function GM:PlayerVoice(ply, num)
 end
 
 function GM:InitPostEntity()
-	RunConsoleCommand("sk_plr_dmg_crowbar", 25)
-	RunConsoleCommand("sk_npc_dmg_crowbar", 10)
-	self.OldDeploySpeed = GetConVar("sv_defaultdeployspeed"):GetFloat()
-	RunConsoleCommand("sv_defaultdeployspeed", 1)
+	RunConsoleCommand("sk_plr_dmg_crowbar", "25")
+	RunConsoleCommand("sk_plr_dmg_stunstick", "40")
+	RunConsoleCommand("sk_npc_dmg_crowbar", "10")
+	self.OldDeploySpeed = GetConVar("sv_defaultdeployspeed"):GetString()
+	RunConsoleCommand("sv_defaultdeployspeed", "1")
 end
 
 function GM:Initialize()
@@ -190,8 +199,9 @@ cvars.AddChangeCallback("dm_infinite", function()
 end)
 
 function GM:ShutDown()
-	RunConsoleCommand("sk_plr_dmg_crowbar", 10)
-	RunConsoleCommand("sk_npc_dmg_crowbar", 5)
+	RunConsoleCommand("sk_plr_dmg_crowbar", "10")
+	RunConsoleCommand("sk_plr_dmg_stunstick", "10")
+	RunConsoleCommand("sk_npc_dmg_crowbar", "5")
 	RunConsoleCommand("sv_defaultdeployspeed", self.OldDeploySpeed)
 end
 
@@ -208,5 +218,5 @@ function GM:PlayerInit(ply)
 end
 
 net.Receive("PlayerInit", function(len, ply)
-	hook.Run("PlayerInit", ply)
+	gamemode.Run("PlayerInit", ply)
 end)

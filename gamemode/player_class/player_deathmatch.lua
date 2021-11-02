@@ -115,7 +115,6 @@ function PLAYER:SetupDataTables()
 end
 
 function PLAYER:Init()
-	self.Player:SetShowTaunts(false)
 	self.Player:SetNextTaunt(0)
 end
 

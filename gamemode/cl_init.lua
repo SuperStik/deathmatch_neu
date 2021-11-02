@@ -116,7 +116,7 @@ local modelpanel
 local bodygroups
 
 local function HideSpare1()
-	hook.Run("HideSpare1")
+	gamemode.Call("HideSpare1")
 end
 
 local function timeThink(self)
@@ -446,7 +446,7 @@ end)
 -----------------------------------------------------------]]
 function GM:ShowSpare1()
 	if IsValid(self.TauntTextPanel) then
-		self:HideSpare1()
+		gamemode.Call("HideSpare1")
 
 		return
 	end
