@@ -3,7 +3,7 @@
 	"title"		"Deathmatch"
 	"base"		"base"
 	"category"	"pvp"
-	"maps"		"^rpdm_"
+	"maps"		"^gmdm_|^rpdm_"
 	"workshopid"	"2546479867"
 	"menusystem"	"1"
 	"settings"
