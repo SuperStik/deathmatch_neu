@@ -75,5 +75,13 @@
 			"singleplayer"	"1"
 			
 		}
+		8
+		{
+			"name"	"dm_allplayermodels"
+			"text"	"Show HUD info"
+			"help"	"Show HUD info when hovering over a player"
+			"type"	"CheckBox"
+			"default"	"0"
+		}
 	}
 }

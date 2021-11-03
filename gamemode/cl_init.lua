@@ -99,6 +99,7 @@ local infinite = CreateConVar("dm_infinite", "1", convartbl, "If set, the game w
 local dm_weapons = CreateConVar("dm_weapons", "1", convartbl, "If enabled, each player will receive weapons on each spawn")
 local customweps = CreateConVar("dm_customloadout", "0", convartbl, "Player load-out is assigned by data/deathmatch/, not the code")
 local dm_allplayermodels = CreateConVar("dm_allplayermodels", "0", convartbl, "If enabled, players can use custom server-side models")
+local showinfo = CreateConVar("dm_showinfo", "0", convartbl, "Show HUD info when hovering over a player")
 
 local cl_playercolor = CreateConVar("cl_playercolor", "0.24 0.34 0.41", {FCVAR_ARCHIVE, FCVAR_USERINFO, FCVAR_DONTRECORD}, "The value is a Vector - so between 0-1 - not between 0-255")
 
@@ -763,6 +764,7 @@ function GM:HUDDrawTargetID()
 	surface.SetTextPos(x, y)
 	surface.SetTextColor(teamcol.r, teamcol.g, teamcol.b)
 	surface.DrawText(text)
+	if showinfo:GetBool() then
 	text = trace.Entity:Health() .. "%"
 	local armo = trace.Entity:Armor() .. "%"
 	y = y + h + 5
@@ -784,4 +786,5 @@ function GM:HUDDrawTargetID()
 	surface.DrawText(text)
 	surface.SetTextPos(x, y + 15)
 	surface.DrawText(armo)
+	end
 end

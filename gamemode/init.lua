@@ -218,5 +218,5 @@ function GM:PlayerInit(ply)
 end
 
 net.Receive("PlayerInit", function(len, ply)
-	gamemode.Run("PlayerInit", ply)
+	gamemode.Call("PlayerInit", ply)
 end)
