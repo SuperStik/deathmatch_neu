@@ -171,6 +171,8 @@ function GM:InitPostEntity()
 	RunConsoleCommand("sk_npc_dmg_crowbar", "10")
 	self.OldDeploySpeed = GetConVar("sv_defaultdeployspeed"):GetString()
 	RunConsoleCommand("sv_defaultdeployspeed", "1")
+	RunConsoleCommand("gmod_maxammo", "0")
+	RunConsoleCommand("sv_sticktoground", "0")
 end
 
 function GM:Initialize()
@@ -203,18 +205,20 @@ function GM:ShutDown()
 	RunConsoleCommand("sk_plr_dmg_stunstick", "10")
 	RunConsoleCommand("sk_npc_dmg_crowbar", "5")
 	RunConsoleCommand("sv_defaultdeployspeed", self.OldDeploySpeed)
+	RunConsoleCommand("gmod_maxammo", "9999")
+	RunConsoleCommand("sv_sticktoground", "1")
 end
 
 function GM:PlayerInitialSpawn(ply)
 	ply:SetTeam(TEAM_UNASSIGNED)
-
-	if ply:GetInfo("dm_hidehelp") == "0" then
-		self:ShowHelp(ply)
-	end
 end
 
 function GM:PlayerInit(ply)
 	ply:SetHost(ply:IsListenServerHost())
+
+	if ply:GetInfo("dm_hidehelp") == "0" then
+		self:ShowHelp(ply)
+	end
 end
 
 net.Receive("PlayerInit", function(len, ply)
