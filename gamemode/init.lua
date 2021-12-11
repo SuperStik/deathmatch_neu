@@ -25,7 +25,7 @@ local function cleanMap(str, bool)
 		game.CleanUpMap()
 		PrintMessage(4, str or "Cleaning up map...")
 	else
-		hook.Run("EndRound")
+		hook.Call("EndRound", GAMEMODE)
 	end
 end
 

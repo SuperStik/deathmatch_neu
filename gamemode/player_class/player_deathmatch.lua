@@ -98,8 +98,22 @@ local dm_models = {
 	male16 = "models/player/Group03/male_07.mdl"
 }
 
+local meta = FindMetaTable("Player")
+
+function meta:Lives()
+	return self.dt.Lives
+end
+
 if CLIENT then
 	dm_models = nil
+else
+	function meta:SetLives(int)
+		self.dt.Lives = int
+	end
+
+	function meta:AddLives(int)
+		self.dt.Lives = self.dt.Lives + int
+	end
 end
 
 local dm_weapons = GetConVar("dm_weapons")
@@ -112,6 +126,7 @@ function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Bool", 0, "Host") --shit way to see who is listen server host
 	self.Player:NetworkVar("Bool", 1, "ShowTaunts")
 	self.Player:NetworkVar("Float", 0, "NextTaunt")
+	self.Player:DTVar("Int", 0, "Lives")
 end
 
 function PLAYER:Init()
