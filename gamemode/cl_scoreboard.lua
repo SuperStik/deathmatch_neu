@@ -18,6 +18,7 @@ local user_orange_img = Material("icon16/user_orange.png")
 local user_img = Material("icon16/user.png")
 local sound_mute_img = Material("icon16/sound_mute.png")
 local sound_img = Material("icon16/sound.png")
+local maxlives = CreateConVar("dm_lives", "0", 8576, "If greater than 0, the every player will have a set amount of lives")
 
 --
 -- This defines a new panel type for the player row. The player row is given a player
@@ -84,6 +85,7 @@ local PLAYER_LINE = {
 	end,
 	--MsgN( pl, " Friend: ", friend )
 	Think = function(self)
+		local lives = maxlives:GetInt()
 		if not IsValid(self.Player) then
 			self:SetZPos(9999) -- Causes a rebuild
 			self:Remove()
@@ -96,9 +98,21 @@ local PLAYER_LINE = {
 			self.Name:SetText(self.PName)
 		end
 
-		if self.NumKills == nil or self.NumKills ~= self.Player:Frags() then
-			self.NumKills = self.Player:Frags()
-			self.Kills:SetText(self.NumKills)
+		if lives < 1 then
+			if self.NumKills == nil or self.NumKills ~= self.Player:Frags() then
+				self.NumKills = self.Player:Frags()
+				self.Kills:SetText(self.NumKills)
+			end
+		elseif lives > 1
+			if self.NumKills == nil or self.NumKills ~= self.Player:Lives() then
+				self.NumKills = self.Player:Lives()
+				self.Kills:SetText(self.NumKills)
+			end
+		else
+			if self.NumKills ~= nil
+				self.NumKills = nil
+				self.Kills:SetText("")
+			end
 		end
 
 		if self.NumDeaths == nil or self.NumDeaths ~= self.Player:Deaths() then
@@ -204,6 +218,7 @@ PLAYER_LINE = vgui.RegisterTable(PLAYER_LINE, "DPanel")
 -- Here we define a new panel table for the scoreboard. It basically consists
 -- of a header and a scrollpanel - into which the player lines are placed.
 --
+
 local SCORE_BOARD = {
 	Init = function(self)
 		self.Header = self:Add("Panel")
@@ -248,6 +263,7 @@ local SCORE_BOARD = {
 		self.TextDeaths:DockMargin(0, 0, 35, 0)
 		self.TextDeaths:SetContentAlignment(5)
 		self.TextDeaths:SetExpensiveShadow(2, ExpensiveCol)
+		self.TextDeaths.Think = textDeathsThink
 		self.TextFrags = self.Header:Add("DLabel")
 		self.TextFrags:Dock(RIGHT)
 		self.TextFrags:SetFont("ScoreboardDefault")
@@ -269,6 +285,7 @@ local SCORE_BOARD = {
 		draw.RoundedBox(4, 0, 0, w, h, ExpensiveCol)
 	end,
 	Think = function(self, w, h)
+		local lives = maxlives:GetInt()
 		self.Name:SetText(GetHostName())
 		--
 		-- Loop through each player, and if one doesn't have a score entry - create it.
@@ -281,6 +298,16 @@ local SCORE_BOARD = {
 			pl.ScoreEntry = vgui.CreateFromTable(PLAYER_LINE, pl.ScoreEntry)
 			pl.ScoreEntry:Setup(pl)
 			self.Scores:AddItem(pl.ScoreEntry)
+		end
+
+		if lives < 1 then
+			self.TextDeaths:SetVisible(true)
+			self.TextDeaths:SetText("Deaths")
+		elseif lives > 1 then
+			self.TextDeaths:SetVisible(true)
+			self.TextDeaths:SetText("Lives")
+		else
+			self.TextDeaths:SetVisible(false)
 		end
 	end
 }

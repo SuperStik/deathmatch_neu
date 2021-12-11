@@ -208,7 +208,7 @@ end
 function GM:PlayerInit(ply)
 	ply:SetHost(ply:IsListenServerHost())
 
-	if ply:GetInfo("dm_hidehelp") == "0" then
+	if ply:GetInfoNum("dm_hidehelp", 0) == 0 then
 		self:ShowHelp(ply)
 	end
 end
