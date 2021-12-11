@@ -718,7 +718,7 @@ end
 -----------------------------------------------------------]]
 function GM:StartRound()
 	self.RoundEnd = false
-	hook.Run("ScoreboardHide", true)
+	hook.Call("ScoreboardHide", self, true)
 	self:Initialize()
 end
 
@@ -727,7 +727,7 @@ end
 -----------------------------------------------------------]]
 function GM:EndRound()
 	self.RoundEnd = true
-	hook.Run("ScoreboardShow")
+	hook.Call("ScoreboardShow", self)
 	surface.PlaySound("buttons/blip1.wav")
 end
 

@@ -47,7 +47,7 @@ net.Receive("SendTaunt", function(_, ply)
 		ply:EmitSound(tauntList[10])
 	end
 
-	local num = hook.Run("PlayerVoice", ply, key)
+	local num = hook.Call("PlayerVoice", GAMEMODE, ply, key)
 	net.Start("SendTaunt")
 
 	if IsValid(ply) then
@@ -69,7 +69,7 @@ function GM:PlayerSpawn(pl, transiton)
 	-- If we are in transition, do not touch player's weapons
 	if (not transiton) then
 		-- Call item loadout function
-		hook.Run("PlayerLoadout", pl)
+		hook.Call("PlayerLoadout", self, pl)
 	end
 
 	-- Set player model
@@ -222,5 +222,5 @@ function GM:PlayerInit(ply)
 end
 
 net.Receive("PlayerInit", function(len, ply)
-	gamemode.Call("PlayerInit", ply)
+	hook.Run("PlayerInit", GAMEMODE, ply)
 end)
