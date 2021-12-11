@@ -117,7 +117,7 @@ local modelpanel
 local bodygroups
 
 local function HideSpare1()
-	gamemode.Call("HideSpare1")
+	hook.Run("HideSpare1")
 end
 
 local function timeThink(self)
@@ -446,8 +446,11 @@ end)
 	Name: gamemode:ShowSpare1()
 -----------------------------------------------------------]]
 function GM:ShowSpare1()
+	local ply, curtime = LocalPlayer(), CurTime()
+	if ply:GetNextTaunt() > curtime then return end
+
 	if IsValid(self.TauntTextPanel) then
-		gamemode.Call("HideSpare1")
+		hook.Call("HideSpare1", self)
 
 		return
 	end
@@ -472,8 +475,7 @@ function GM:ShowSpare1()
 
 		self.TauntTextPanel["Option" .. k]:SetBright(true)
 	end
-
-	timer.Create("HideSpare1", 2, 1, HideSpare1)
+	--timer.Create("HideSpare1", 2, 1, HideSpare1)
 end
 
 --[[---------------------------------------------------------
@@ -665,10 +667,9 @@ end
 -----------------------------------------------------------]]
 function GM:PlayerBindPress(ply, bind)
 	local textpos = string.find(bind, "slot")
+	local curtime = CurTime()
 
-	if ply:GetShowTaunts() and textpos == 1 then
-		local curtime = CurTime()
-
+	if ply:GetTauntTimer() > curtime and textpos == 1 and IsValid(self.TauntTextPanel) then
 		if ply:GetNextTaunt() <= curtime then
 			net.Start("SendTaunt")
 			net.WriteUInt(tonumber(string.Right(bind, 1)), 4)
@@ -731,6 +732,12 @@ function GM:EndRound()
 	surface.PlaySound("buttons/blip1.wav")
 end
 
+function GM:Think()
+	if LocalPlayer():GetTauntTimer() <= CurTime() then
+		hook.Call("HideSpare1", self)
+	end
+end
+
 function GM:HUDDrawTargetID()
 	local trace = util.TraceLine(util.GetPlayerTrace(LocalPlayer()))
 	if not (trace.Hit or trace.HitNonWorld) then return end
@@ -764,27 +771,28 @@ function GM:HUDDrawTargetID()
 	surface.SetTextPos(x, y)
 	surface.SetTextColor(teamcol.r, teamcol.g, teamcol.b)
 	surface.DrawText(text)
+
 	if showinfo:GetBool() then
-	text = trace.Entity:Health() .. "%"
-	local armo = trace.Entity:Armor() .. "%"
-	y = y + h + 5
-	surface.SetFont("TargetIDSmall")
-	w, h = surface.GetTextSize(text)
-	x = MouseX - w / 2
-	surface.SetTextPos(x + 1, y + 1)
-	surface.SetTextColor(0, 0, 0, 120)
-	surface.DrawText(text)
-	surface.SetTextPos(x + 1, y + 16)
-	surface.DrawText(armo)
-	surface.SetTextPos(x + 2, y + 2)
-	surface.SetTextColor(0, 0, 0, 50)
-	surface.DrawText(text)
-	surface.SetTextPos(x + 2, y + 17)
-	surface.DrawText(armo)
-	surface.SetTextPos(x, y)
-	surface.SetTextColor(teamcol.r, teamcol.g, teamcol.b)
-	surface.DrawText(text)
-	surface.SetTextPos(x, y + 15)
-	surface.DrawText(armo)
+		text = trace.Entity:Health() .. "%"
+		local armo = trace.Entity:Armor() .. "%"
+		y = y + h + 5
+		surface.SetFont("TargetIDSmall")
+		w, h = surface.GetTextSize(text)
+		x = MouseX - w / 2
+		surface.SetTextPos(x + 1, y + 1)
+		surface.SetTextColor(0, 0, 0, 120)
+		surface.DrawText(text)
+		surface.SetTextPos(x + 1, y + 16)
+		surface.DrawText(armo)
+		surface.SetTextPos(x + 2, y + 2)
+		surface.SetTextColor(0, 0, 0, 50)
+		surface.DrawText(text)
+		surface.SetTextPos(x + 2, y + 17)
+		surface.DrawText(armo)
+		surface.SetTextPos(x, y)
+		surface.SetTextColor(teamcol.r, teamcol.g, teamcol.b)
+		surface.DrawText(text)
+		surface.SetTextPos(x, y + 15)
+		surface.DrawText(armo)
 	end
 end

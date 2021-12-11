@@ -58,7 +58,6 @@ net.Receive("SendTaunt", function(_, ply)
 
 	net.WriteUInt(num, 4)
 	net.Broadcast()
-	ply:SetShowTaunts(false)
 end)
 
 function GM:PlayerSpawn(pl, transiton)
@@ -145,16 +144,9 @@ function GM:ShowTeam(ply)
 end
 
 function GM:ShowSpare1(ply)
-	ply:SetShowTaunts(true)
+	local curtime = CurTime()
+	ply:SetTauntTimer(curtime + (ply:GetTauntTimer() <= curtime and 2 or 0))
 	ply:SendLua("hook.Run('ShowSpare1')")
-	local time = "HideSpare1" .. ply:EntIndex()
-	if timer.Exists(time) then
-		timer.Adjust(time, 2)
-	else
-		timer.Create(time, 2, 1, function()
-			ply:SetShowTaunts(false)
-		end)
-	end
 end
 
 function GM:ShowSpare2(ply)
@@ -222,5 +214,5 @@ function GM:PlayerInit(ply)
 end
 
 net.Receive("PlayerInit", function(len, ply)
-	hook.Run("PlayerInit", GAMEMODE, ply)
+	hook.Call("PlayerInit", GAMEMODE, ply)
 end)

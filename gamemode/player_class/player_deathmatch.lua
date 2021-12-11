@@ -124,13 +124,9 @@ local customloadout = GetConVar("dm_customloadout")
 
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Bool", 0, "Host") --shit way to see who is listen server host
-	self.Player:NetworkVar("Bool", 1, "ShowTaunts")
 	self.Player:NetworkVar("Float", 0, "NextTaunt")
+	self.Player:NetworkVar("Float", 1, "TauntTimer")
 	self.Player:DTVar("Int", 0, "Lives")
-end
-
-function PLAYER:Init()
-	self.Player:SetNextTaunt(0)
 end
 
 --
