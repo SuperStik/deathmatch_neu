@@ -6,3 +6,4 @@ The repo for my simple deathmatch gamemode for Garry's Mod
 - [x] Quick fix taunt list desync
 - [ ] Permanent fix taunt list desync
 - [ ] Add spectator and optional life system
+- [ ] Add team deathmatch
