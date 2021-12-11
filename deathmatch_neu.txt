@@ -29,6 +29,15 @@
 		}
 		3
 		{
+			"name"	"dm_lives"
+			"text"	"Lives:"
+			"help"	"If greater than 0, the every player will have a set amount of lives"
+			"type" "Numeric"
+			"default"	"0"
+			"singleplayer"	"1"
+		}
+		4
+		{
 			"name"	"dm_infinite"
 			"text"	"Infinite mode"
 			"help"	"If set, the game will have an infinite round, and the round timer will act as a cleanup timer"
