@@ -86,7 +86,7 @@
 		}
 		8
 		{
-			"name"	"dm_allplayermodels"
+			"name"	"dm_showinfo"
 			"text"	"Show HUD info"
 			"help"	"Show HUD info when hovering over a player"
 			"type"	"CheckBox"
