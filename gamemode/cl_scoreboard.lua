@@ -103,13 +103,13 @@ local PLAYER_LINE = {
 				self.NumKills = self.Player:Frags()
 				self.Kills:SetText(self.NumKills)
 			end
-		elseif lives > 1
+		elseif lives > 1 then
 			if self.NumKills == nil or self.NumKills ~= self.Player:Lives() then
 				self.NumKills = self.Player:Lives()
 				self.Kills:SetText(self.NumKills)
 			end
 		else
-			if self.NumKills ~= nil
+			if self.NumKills ~= nil then
 				self.NumKills = nil
 				self.Kills:SetText("")
 			end
