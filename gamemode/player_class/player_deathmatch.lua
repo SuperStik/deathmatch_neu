@@ -148,31 +148,25 @@ end
 
 function PLAYER:Loadout()
 	if not dm_weapons:GetBool() then return end
+	local ply = self.Player
 
 	if customloadout:GetBool() then
-		if not pcall(readCustom, self.Player) then
+		if not pcall(readCustom, ply) then
 			ErrorNoHalt("Custom weapon or ammo configuration is incorrect! Check the deathmatch configuration!")
 		end
 	else
-		self.Player:Give("weapon_pistol")
-		self.Player:Give("weapon_crowbar")
-		self.Player:Give("weapon_357")
-		self.Player:Give("weapon_crossbow")
-		self.Player:Give("weapon_shotgun")
-		self.Player:Give("weapon_smg1")
-		self.Player:Give("weapon_physcannon")
+		ply:Give("weapon_pistol")
+		ply:Give("weapon_crowbar")
+		ply:Give("weapon_smg1")
+		ply:Give("weapon_physcannon")
 
 		if dm_grenades:GetBool() then
-			self.Player:Give("weapon_frag")
-			self.Player:GiveAmmo(4, "Grenade", true)
+			ply:Give("weapon_frag")
+			ply:GiveAmmo(1, "Grenade", true)
 		end
 
-		self.Player:GiveAmmo(50, "Pistol", true)
-		self.Player:GiveAmmo(2, "SMG1_Grenade", true)
-		self.Player:GiveAmmo(12, "357", true)
-		self.Player:GiveAmmo(75, "SMG1", true)
-		self.Player:GiveAmmo(20, "Buckshot", true)
-		self.Player:GiveAmmo(12, "XBowBolt", true)
+		ply:GiveAmmo(180, "Pistol", true)
+		ply:GiveAmmo(45, "SMG1", true)
 	end
 end
 
