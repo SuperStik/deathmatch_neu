@@ -98,26 +98,21 @@ local PLAYER_LINE = {
 			self.Name:SetText(self.PName)
 		end
 
-		if lives < 1 then
-			if self.NumKills == nil or self.NumKills ~= self.Player:Frags() then
-				self.NumKills = self.Player:Frags()
-				self.Kills:SetText(self.NumKills)
-			end
-		elseif lives > 1 then
-			if self.NumKills == nil or self.NumKills ~= self.Player:Lives() then
-				self.NumKills = self.Player:Lives()
-				self.Kills:SetText(self.NumKills)
+		if lives <= 0 then
+			if self.NumDeaths == nil or self.NumDeaths ~= self.Player:Deaths() then
+				self.NumDeaths = self.Player:Deaths()
+				self.Deaths:SetText(self.NumDeaths)
 			end
 		else
-			if self.NumKills ~= nil then
-				self.NumKills = nil
-				self.Kills:SetText("")
+			if self.NumDeaths == nil or self.NumDeaths ~= self.Player:Lives() then
+				self.NumDeaths = self.Player:Lives()
+				self.Deaths:SetText(self.NumDeaths)
 			end
 		end
 
-		if self.NumDeaths == nil or self.NumDeaths ~= self.Player:Deaths() then
-			self.NumDeaths = self.Player:Deaths()
-			self.Deaths:SetText(self.NumDeaths)
+		if self.NumKills == nil or self.NumKills ~= self.Player:Frags() then
+			self.NumKills = self.Player:Frags()
+			self.Kills:SetText(self.NumKills)
 		end
 
 		if self.NumPing == nil or self.NumPing ~= self.Player:Ping() then
@@ -300,14 +295,10 @@ local SCORE_BOARD = {
 			self.Scores:AddItem(pl.ScoreEntry)
 		end
 
-		if lives < 1 then
-			self.TextDeaths:SetVisible(true)
+		if lives <= 0 then
 			self.TextDeaths:SetText("Deaths")
-		elseif lives > 1 then
-			self.TextDeaths:SetVisible(true)
-			self.TextDeaths:SetText("Lives")
 		else
-			self.TextDeaths:SetVisible(false)
+			self.TextDeaths:SetText("Lives")
 		end
 	end
 }
