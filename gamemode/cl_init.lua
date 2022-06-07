@@ -91,7 +91,7 @@ local dm_models = {
 	male16 = "models/player/Group03/male_07.mdl"
 }
 
-local TauntList = {"1: Good God...", "2: Ha ha! Like that?", "3: Oh no...", "4: Here they come!", "5: Over here!", "6: Get the hell out of here!", "7: Help!", "8: Hi", "9: Okay", "0: Incoming!"}
+local TauntList = {"npc_citizen.goodgod", "npc_citizen.likethat", "npc_citizen.ohno", "npc_citizen.heretheycome01", "npc_citizen.overhere01", "npc_citizen.gethellout", "npc_citizen.help01", "npc_citizen.hi01", "npc_citizen.ok01", "npc_citizen.incoming01"}
 
 local convartbl = {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}
 
@@ -111,6 +111,7 @@ local cheats = GetConVar("sv_cheats")
 local boxColor = Color(0, 0, 0, 128)
 local deadColo = Color(255, 30, 40)
 local voiceCol = Color(61, 66, 212)
+local hudColor = Color(255, 235, 20)
 local replacetable
 local modelskin
 local modelpanel
@@ -456,7 +457,7 @@ function GM:ShowSpare1()
 	end
 
 	self.TauntTextPanel = vgui.CreateX("Panel", GetHUDPanel(), "TauntMenu")
-	self.TauntTextPanel:SetSize(ScrW() / 8, 265)
+	self.TauntTextPanel:SetSize(ScrW() / 7, 265)
 	self.TauntTextPanel:SetPos(25, ScrH() / 6)
 
 	self.TauntTextPanel.Paint = function(pnl, w, h)
@@ -466,16 +467,20 @@ function GM:ShowSpare1()
 	self.TauntTextPanel:DockPadding(10, 10, 10, 10)
 
 	for k, v in ipairs(TauntList) do
-		self.TauntTextPanel["Option" .. k] = Label(v, self.TauntTextPanel)
-		self.TauntTextPanel["Option" .. k]:Dock(TOP)
+		local opt = "Option" .. k
+		self.TauntTextPanel[opt] = vgui.Create("DLabel", self.TauntTextPanel)
+		self.TauntTextPanel[opt]:SetFont("HudSelectionText")
+		self.TauntTextPanel[opt]:Dock(TOP)
 
-		if k ~= 10 then
-			self.TauntTextPanel["Option" .. k]:DockMargin(0, 0, 0, 5)
+		if k == 10 then
+			self.TauntTextPanel[opt]:SetText("0: " .. language.GetPhrase(v))
+		else
+			self.TauntTextPanel[opt]:SetText(k .. ": " .. language.GetPhrase(v))
+			self.TauntTextPanel[opt]:DockMargin(0, 0, 0, 5)
 		end
 
-		self.TauntTextPanel["Option" .. k]:SetBright(true)
+		self.TauntTextPanel[opt]:SetColor(hudColor)
 	end
-	--timer.Create("HideSpare1", 2, 1, HideSpare1)
 end
 
 --[[---------------------------------------------------------
@@ -710,7 +715,7 @@ function GM:OnPlayerTaunt(ply, num, dead)
 	end
 
 	table.insert(tab, color_white)
-	table.insert(tab, ": " .. string.sub(TauntList[num ~= 0 and num or 10], 4))
+	table.insert(tab, ": " .. language.GetPhrase(TauntList[num == 0 and 10 or num]))
 	chat.AddText(unpack(tab))
 end
 
