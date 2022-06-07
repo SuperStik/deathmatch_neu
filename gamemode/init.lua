@@ -25,7 +25,7 @@ local function cleanMap(str, bool)
 		game.CleanUpMap()
 		PrintMessage(4, str or "Cleaning up map...")
 	else
-		hook.Call("EndRound", GAMEMODE)
+		hook.Run("EndRound")
 	end
 end
 
@@ -47,7 +47,7 @@ net.Receive("SendTaunt", function(_, ply)
 		ply:EmitSound(tauntList[10])
 	end
 
-	local num = hook.Call("PlayerVoice", GAMEMODE, ply, key)
+	local num = hook.Run("PlayerVoice", ply, key)
 	net.Start("SendTaunt")
 
 	if IsValid(ply) then
@@ -61,12 +61,16 @@ net.Receive("SendTaunt", function(_, ply)
 end)
 
 function GM:PlayerSpawn(pl, transiton)
+	if pl:Team() == TEAM_UNASSIGNED then
+		pl:SetTeam(TEAM_DEATHMATCH)
+	end
+
 	player_manager.SetPlayerClass(pl, "player_deathmatch")
 	player_manager.OnPlayerSpawn(pl, transiton)
 	player_manager.RunClass(pl, "Spawn")
 
 	-- If we are in transition, do not touch player's weapons
-	if (not transiton) then
+	if not transiton then
 		-- Call item loadout function
 		hook.Call("PlayerLoadout", self, pl)
 	end
@@ -214,5 +218,5 @@ function GM:PlayerInit(ply)
 end
 
 net.Receive("PlayerInit", function(len, ply)
-	hook.Call("PlayerInit", GAMEMODE, ply)
+	hook.Run("PlayerInit", ply)
 end)

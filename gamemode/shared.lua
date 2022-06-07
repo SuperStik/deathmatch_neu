@@ -17,3 +17,8 @@ function GM:PlayerNoClip(ply, state)
 		return playerfly:GetBool() or not state
 	end
 end
+
+function GM:CreateTeams()
+	TEAM_DEATHMATCH = 3
+	team.SetUp(TEAM_DEATHMATCH, "Deathmatch", Color(255, 255, 100))
+end
