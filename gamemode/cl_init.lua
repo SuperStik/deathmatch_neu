@@ -614,7 +614,7 @@ function GM:PlayerBindPress(ply, bind)
 			net.SendToServer()
 		end
 
-		self:HideSpare1()
+		hook.Call("HideSpare1", self)
 
 		return true
 	end
