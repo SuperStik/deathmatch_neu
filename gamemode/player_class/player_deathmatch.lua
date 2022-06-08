@@ -54,6 +54,7 @@ local dm_grenades = GetConVar("dm_grenades")
 local dm_allplayermodels = GetConVar("dm_allplayermodels")
 local dm_medpacktimer = GetConVar("dm_medpacktimer")
 local customloadout = GetConVar("dm_customloadout")
+local glives = GetConVar("dm_lives")
 
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Bool", 0, "Host") --shit way to see who is listen server host
@@ -134,13 +135,17 @@ function PLAYER:SetModel()
 end
 
 function PLAYER:Death(inflictor, attacker)
+	local ply = self.Player
+	if glives:GetInt() > 0 and ply:Lives() > 0 then
+		ply:AddLives(-1)
+	end
 	if not dm_medpacktimer:GetBool() then return end
 	local medkit = ents.Create("item_healthkit")
 	medkit:SetModel("models/items/healthkit.mdl")
-	medkit:SetPos(self.Player:GetPos())
+	medkit:SetPos(ply:GetPos())
 	medkit:Spawn()
 	local respawn = dm_medpacktimer:GetFloat()
-	if respawn < 0 then return end
+	if respawn <= 0 then return end
 	SafeRemoveEntityDelayed(medkit, respawn)
 end
 
