@@ -2,29 +2,6 @@ include"shared.lua"
 include"cl_scoreboard.lua"
 local boxColor = include"cl_taunt.lua"
 
-local dm_models = {
-	combine = "models/player/combine_soldier.mdl",
-	combineprison = "models/player/combine_soldier_prisonguard.mdl",
-	combineelite = "models/player/combine_super_soldier.mdl",
-	police = "models/player/police.mdl",
-	policefem = "models/player/police_fem.mdl",
-	female07 = "models/player/Group03/female_01.mdl",
-	female08 = "models/player/Group03/female_02.mdl",
-	female09 = "models/player/Group03/female_03.mdl",
-	female10 = "models/player/Group03/female_04.mdl",
-	female11 = "models/player/Group03/female_05.mdl",
-	female12 = "models/player/Group03/female_06.mdl",
-	male10 = "models/player/Group03/male_01.mdl",
-	male11 = "models/player/Group03/male_02.mdl",
-	male12 = "models/player/Group03/male_03.mdl",
-	male13 = "models/player/Group03/male_04.mdl",
-	male14 = "models/player/Group03/male_05.mdl",
-	male15 = "models/player/Group03/male_06.mdl",
-	male16 = "models/player/Group03/male_07.mdl",
-	male17 = "models/player/Group03/male_08.mdl",
-	male18 = "models/player/Group03/male_09.mdl"
-}
-
 local convartbl = {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}
 
 local infinite = CreateConVar("dm_infinite", "1", convartbl, "If set, the game will have an infinite round, and the round timer will act as a cleanup timer")
@@ -168,7 +145,7 @@ end
 -----------------------------------------------------------]]
 function GM:ShowTeam()
 	if IsValid(self.TeamSelectFrame) then return end
-	replacetable = dm_allplayermodels:GetBool() and player_manager.AllValidModels() or dm_models
+	replacetable = dm_allplayermodels:GetBool() and player_manager.AllValidModels() or list.GetForEdit("ValidDMPlayerModels")
 	-- Simple team selection box
 	self.TeamSelectFrame = vgui.Create("DFrame", nil, "PlayerModelSelector")
 	self.TeamSelectFrame:SetTitle("#smwidget.playermodel_title")
