@@ -6,4 +6,5 @@
 gamemodes\deathmatch_neu\gamemode\cl_init.lua
 gamemodes\deathmatch_neu\gamemode\shared.lua
 gamemodes\deathmatch_neu\gamemode\cl_scoreboard.lua
+gamemodes\deathmatch_neu\gamemode\cl_taunt.lua
 gamemodes\deathmatch_neu\gamemode\player_class\player_deathmatch.lua

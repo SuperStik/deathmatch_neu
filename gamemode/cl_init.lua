@@ -1,5 +1,6 @@
-include("shared.lua")
-include("cl_scoreboard.lua")
+include"shared.lua"
+include"cl_scoreboard.lua"
+local boxColor = include"cl_taunt.lua"
 
 local dm_models = {
 	combine = "models/player/combine_soldier.mdl",
@@ -24,8 +25,6 @@ local dm_models = {
 	male18 = "models/player/Group03/male_09.mdl"
 }
 
-local TauntList = {"npc_citizen.goodgod", "npc_citizen.likethat", "npc_citizen.ohno", "npc_citizen.heretheycome01", "npc_citizen.overhere01", "npc_citizen.gethellout", "npc_citizen.help01", "npc_citizen.hi01", "npc_citizen.ok01", "npc_citizen.incoming01"}
-
 local convartbl = {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}
 
 local infinite = CreateConVar("dm_infinite", "1", convartbl, "If set, the game will have an infinite round, and the round timer will act as a cleanup timer")
@@ -40,19 +39,10 @@ local cl_playerskin = CreateConVar("cl_playerskin", "0", 131712, "The skin to us
 local cl_playerbodygroups = CreateConVar("cl_playerbodygroups", "0", 131712, "The bodygroups to use, if the model has any")
 CreateClientConVar("dm_hidehelp", "0", nil, true, "Prevents the help menu from opening when loading into a game.")
 local cl_playermodel = GetConVar("cl_playermodel")
-local cheats = GetConVar("sv_cheats")
-local boxColor = Color(0, 0, 0, 128)
-local deadColo = Color(255, 30, 40)
-local voiceCol = Color(61, 66, 212)
-local hudColor = Color(255, 235, 20)
 local replacetable
 local modelskin
 local modelpanel
 local bodygroups
-
-local function HideSpare1()
-	hook.Run("HideSpare1")
-end
 
 local function timeThink(self)
 	local timeleft = math.Round(GetGlobalInt("TimeLeft"))
@@ -81,7 +71,7 @@ local function updateBodygroups(pnl, val)
 	modelpanel.Entity:SetBodygroup(pnl.num, math.Round(val))
 	local str = string.Explode(" ", cl_playerbodygroups:GetString())
 
-	if (#str < pnl.num + 1) then
+	if #str < pnl.num + 1 then
 		for i = 1, pnl.num + 1 do
 			str[i] = str[i] or 0
 		end
@@ -129,7 +119,7 @@ local function mouseRelease(pnl)
 end
 
 local function dragMove(pnl, ent)
-	if (pnl.Pressed) then
+	if pnl.Pressed then
 		local mx = gui.MousePos()
 		pnl.Angles = pnl.Angles - Angle(0, ((pnl.PressX or mx) - mx) / 2, 0)
 		pnl.PressX, pnl.PressY = gui.MousePos()
@@ -174,50 +164,10 @@ function GM:InitPostEntity()
 end
 
 --[[---------------------------------------------------------
-	Name: gamemode:ShowHelp()
------------------------------------------------------------]]
-function GM:ShowHelp()
-	if IsValid(self.HelpFrame) then return end
-	self.HelpFrame = vgui.Create("DFrame")
-	self.HelpFrame:SetTitle("Help")
-	local width = math.min(ScrW() - 64, 516)
-	self.HelpFrame:SetSize(width, ScrH())
-	self.HelpFrame.btnMinim:SetCursor("arrow")
-	self.HelpFrame.btnMaxim:SetCursor("arrow")
-	local title = Label("Welcome to Deathmatch!", self.HelpFrame)
-	title:Dock(TOP)
-	title:SetFont("DermaLarge")
-	title:SetContentAlignment(8)
-	title:SetAutoStretchVertical(true)
-	local text = Label("Here, your goal is to kill each other (pretty obvious because of the name). Pressing " .. input.LookupBinding("gm_showteam") .. " opens the panel to change your player model, and pressing " .. input.LookupBinding("gm_showspare1") .. " opens the taunt menu. You can press " .. input.LookupBinding("gm_showhelp"):upper() .. " to show this menu again. Press " .. input.LookupBinding("gm_showspare2") .. " to view the server options.", self.HelpFrame)
-	text:Dock(TOP)
-	text:SetWrap(true)
-	text:SetContentAlignment(8)
-	local btn = vgui.Create("DButton", self.HelpFrame)
-	local widthd3 = width / 3
-	btn:SetTall(30)
-	btn:Dock(TOP)
-	btn:DockMargin(widthd3, 4, widthd3, 0)
-	btn:SetText("Close")
-	btn.DoClick = self.HelpFrame.btnClose.DoClick
-	local check = vgui.Create("DCheckBoxLabel", self.HelpFrame)
-	check:SetText("Do not auto-show again")
-	check:AlignRight()
-	check:SetPos(check:GetX() - 4, 118)
-	check:SetConVar("dm_hidehelp")
-	text:SetAutoStretchVertical(true)
-	self.HelpFrame:InvalidateLayout(true)
-	self.HelpFrame:SizeToChildren(nil, true)
-	self.HelpFrame:SetTall(self.HelpFrame:GetTall() + 8)
-	self.HelpFrame:Center()
-	self.HelpFrame:MakePopup()
-end
-
---[[---------------------------------------------------------
 	Name: gamemode:ShowTeam()
 -----------------------------------------------------------]]
 function GM:ShowTeam()
-	if (IsValid(self.TeamSelectFrame)) then return end
+	if IsValid(self.TeamSelectFrame) then return end
 	replacetable = dm_allplayermodels:GetBool() and player_manager.AllValidModels() or dm_models
 	-- Simple team selection box
 	self.TeamSelectFrame = vgui.Create("DFrame", nil, "PlayerModelSelector")
@@ -287,7 +237,7 @@ function GM:ShowTeam()
 
 	searchbar.OnValueChange = function(s, str)
 		for id, pnl in pairs(modellist:GetItems()) do
-			if (not pnl.playermodel:find(str, 1, true) and not pnl.model_path:find(str, 1, true)) then
+			if not pnl.playermodel:find(str, 1, true) and not pnl.model_path:find(str, 1, true) then
 				pnl:SetVisible(false)
 			else
 				pnl:SetVisible(true)
@@ -375,59 +325,6 @@ cvars.AddChangeCallback("cl_playerskin", function(_, __, val)
 		modelpanel.Entity:SetSkin(val)
 	end
 end)
-
---[[---------------------------------------------------------
-	Name: gamemode:ShowSpare1()
------------------------------------------------------------]]
-function GM:ShowSpare1()
-	local ply, curtime = LocalPlayer(), CurTime()
-	if ply:GetNextTaunt() > curtime then return end
-
-	if IsValid(self.TauntTextPanel) then
-		hook.Call("HideSpare1", self)
-
-		return
-	end
-
-	self.TauntTextPanel = vgui.CreateX("Panel", GetHUDPanel(), "TauntMenu")
-	self.TauntTextPanel:SetSize(ScrW() / 7, 265)
-	self.TauntTextPanel:SetPos(25, ScrH() / 6)
-
-	self.TauntTextPanel.Paint = function(pnl, w, h)
-		draw.RoundedBox(8, 0, 0, w, h, boxColor)
-	end
-
-	self.TauntTextPanel:DockPadding(10, 10, 10, 10)
-
-	for k, v in ipairs(TauntList) do
-		local opt = "Option" .. k
-		self.TauntTextPanel[opt] = vgui.Create("DLabel", self.TauntTextPanel)
-		self.TauntTextPanel[opt]:SetFont("HudSelectionText")
-		self.TauntTextPanel[opt]:Dock(TOP)
-
-		if k == 10 then
-			self.TauntTextPanel[opt]:SetText("0: " .. language.GetPhrase(v))
-		else
-			self.TauntTextPanel[opt]:SetText(k .. ": " .. language.GetPhrase(v))
-			self.TauntTextPanel[opt]:DockMargin(0, 0, 0, 5)
-		end
-
-		self.TauntTextPanel[opt]:SetColor(hudColor)
-	end
-end
-
---[[---------------------------------------------------------
-	Name: gamemode:HideSpare1()
------------------------------------------------------------]]
-function GM:HideSpare1()
-	timer.Remove("HideSpare1")
-
-	if IsValid(self.TauntTextPanel) then
-		self.TauntTextPanel:Remove()
-	end
-
-	self.TauntTextPanel = nil
-end
 
 local function layout(pnl)
 	local txt = pnl:GetChild(0)
@@ -620,36 +517,6 @@ function GM:PlayerBindPress(ply, bind)
 	end
 
 	return false
-end
-
---[[---------------------------------------------------------
-	Name: gamemode:OnPlayerTaunt()
------------------------------------------------------------]]
-net.Receive("SendTaunt", function()
-	local ply = Entity(net.ReadUInt(8))
-	hook.Run("OnPlayerTaunt", ply, net.ReadUInt(4), not ply:Alive())
-end)
-
-function GM:OnPlayerTaunt(ply, num, dead)
-	local tab = {}
-
-	if dead then
-		table.insert(tab, deadColo)
-		table.insert(tab, "*DEAD* ")
-	end
-
-	table.insert(tab, voiceCol)
-	table.insert(tab, "(VOICE) ")
-
-	if IsValid(ply) then
-		table.insert(tab, ply)
-	else
-		table.insert(tab, "Console")
-	end
-
-	table.insert(tab, color_white)
-	table.insert(tab, ": " .. language.GetPhrase(TauntList[num == 0 and 10 or num]))
-	chat.AddText(unpack(tab))
 end
 
 --[[---------------------------------------------------------
