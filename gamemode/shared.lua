@@ -24,6 +24,15 @@ GM.IsDeathmatchDerived = true
 local adminfly = CreateConVar("dm_adminnoclip", "1", 8576, "Allow admins to noclip")
 local playerfly = CreateConVar("dm_playernoclip", "0", 8576, "Allow players to noclip")
 
+local combinemdls = {
+	["models/player/combine_soldier.mdl"] = true,
+	["models/player/combine_soldier_prisonguard.mdl"] = true,
+	["models/player/combine_super_soldier.mdl"] = true,
+	["models/player/police.mdl"] = true,
+	["models/player/police_fem.mdl"] = true,
+	["models/player/hostage/hostage_04.mdl"] = true -- easter egg ;^)
+}
+
 function GM:PlayerNoClip(ply, state)
 	if not IsValid(ply) then
 		return false
@@ -37,4 +46,8 @@ end
 function GM:CreateTeams()
 	TEAM_DEATHMATCH = 3
 	team.SetUp(TEAM_DEATHMATCH, "Deathmatch", Color(255, 255, 100))
+end
+
+function GM:IsModelCombine(mdl)
+	return combinemdls[mdl]
 end

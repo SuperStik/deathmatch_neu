@@ -1,10 +1,11 @@
-AddCSLuaFile("cl_init.lua")
-AddCSLuaFile("cl_scoreboard.lua")
-include("shared.lua")
-util.AddNetworkString("SendTaunt")
-util.AddNetworkString("PlayerInit")
-local clean = GetConVar("dm_timer")
-local infinite = GetConVar("dm_infinite")
+AddCSLuaFile"cl_init.lua"
+AddCSLuaFile"cl_scoreboard.lua"
+include"shared.lua"
+util.AddNetworkString"SendTaunt"
+util.AddNetworkString"PlayerInit"
+local clean = GetConVar"dm_timer"
+local infinite = GetConVar"dm_infinite"
+local customloadout = GetConVar"dm_customloadout"
 
 local tauntList = {"npc_citizen.goodgod", "npc_citizen.likethat", "npc_citizen.ohno", "npc_citizen.heretheycome01", "npc_citizen.overhere01", "npc_citizen.gethellout", "npc_citizen.help01", "npc_citizen.hi0", "npc_citizen.ok0", "npc_citizen.incoming02"}
 
@@ -27,10 +28,6 @@ local function cleanMap(str, bool)
 	else
 		hook.Run("EndRound")
 	end
-end
-
-local function playerSetModel(ply)
-	hook.Run("PlayerSetModel", ply)
 end
 
 net.Receive("SendTaunt", function(_, ply)
@@ -76,10 +73,21 @@ function GM:PlayerSpawn(pl, transiton)
 	end
 
 	-- Set player model
-	playerSetModel(pl)
+	hook.Call("PlayerSetModel", self, pl)
 end
 
-concommand.Add("dm_instantchange", playerSetModel, nil, "Set the player\'s model without respawning", FCVAR_CLIENTCMD_CAN_EXECUTE)
+concommand.Add("dm_instantchange", function(ply)
+	hook.Run("PlayerSetModel", ply)
+	if customloadout:GetBool() then return end
+
+	if hook.Run("IsModelCombine", ply:GetModel()) then
+		ply:StripWeapon("weapon_crowbar")
+		ply:Give("weapon_stunstick")
+	else
+		ply:StripWeapon("weapon_stunstick")
+		ply:Give("weapon_crowbar")
+	end
+end, nil, "Set the player\'s model without respawning", FCVAR_CLIENTCMD_CAN_EXECUTE)
 
 function GM:Think()
 	if infinite:GetBool() then return end
