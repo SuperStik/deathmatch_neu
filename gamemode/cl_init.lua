@@ -14,7 +14,6 @@ local cl_playercolor = CreateConVar("cl_playercolor", "0.24 0.34 0.41", {FCVAR_A
 
 local cl_playerskin = CreateConVar("cl_playerskin", "0", 131712, "The skin to use, if the model has any")
 local cl_playerbodygroups = CreateConVar("cl_playerbodygroups", "0", 131712, "The bodygroups to use, if the model has any")
-CreateClientConVar("dm_hidehelp", "0", nil, true, "Prevents the help menu from opening when loading into a game.")
 local cl_playermodel = GetConVar("cl_playermodel")
 local replacetable
 local modelskin
@@ -140,6 +139,16 @@ function GM:InitPostEntity()
 	net.SendToServer()
 end
 
+local function changeClick()
+	RunConsoleCommand("dm_instantchange")
+end
+
+local function changeThink(pnl)
+	local alive = LocalPlayer():Alive()
+	pnl:SetEnabled(alive)
+	pnl:SetCursor(alive and "hand" or "arrow")
+end
+
 --[[---------------------------------------------------------
 	Name: gamemode:ShowTeam()
 -----------------------------------------------------------]]
@@ -165,11 +174,8 @@ function GM:ShowTeam()
 	button:Dock(LEFT)
 	button:SetWide(96)
 	button:DockMargin(0, 64, 4, 64)
-
-	function button:DoClick()
-		RunConsoleCommand("dm_instantchange")
-	end
-
+	button.DoClick = changeClick
+	button.Think = changeThink
 	local colormixer = vgui.Create("DColorMixer", parentpanel)
 	colormixer:SetAlphaBar(false)
 	colormixer:SetPalette(false)

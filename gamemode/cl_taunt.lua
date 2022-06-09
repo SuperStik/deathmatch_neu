@@ -5,6 +5,11 @@ local hudColor = Color(255, 235, 20)
 
 local TauntList = {"npc_citizen.goodgod", "npc_citizen.likethat", "npc_citizen.ohno", "npc_citizen.heretheycome01", "npc_citizen.overhere01", "npc_citizen.gethellout", "npc_citizen.help01", "npc_citizen.hi01", "npc_citizen.ok01", "npc_citizen.incoming01"}
 
+local function teamClick(pnl)
+	RunConsoleCommand("team_set", pnl.iTeam)
+	pnl:GetParent():GetParent():Close()
+end
+
 --[[---------------------------------------------------------
 	Name: gamemode:ShowHelp()
 -----------------------------------------------------------]]
@@ -25,22 +30,28 @@ function GM:ShowHelp()
 	text:Dock(TOP)
 	text:SetWrap(true)
 	text:SetContentAlignment(8)
-	local btn = vgui.Create("DButton", self.HelpFrame)
-	local widthd3 = width / 3
-	btn:SetTall(30)
-	btn:Dock(TOP)
-	btn:DockMargin(widthd3, 4, widthd3, 0)
-	btn:SetText("Close")
-	btn.DoClick = self.HelpFrame.btnClose.DoClick
-	local check = vgui.Create("DCheckBoxLabel", self.HelpFrame)
-	check:SetText("Do not auto-show again")
-	check:AlignRight()
-	check:SetPos(check:GetX() - 4, 118)
-	check:SetConVar("dm_hidehelp")
+	local pContainer = vgui.CreateX("Panel", self.HelpFrame, "ButtonContainer")
+	pContainer:Dock(TOP)
+	pContainer:SetTall(30)
+	local sdm = vgui.Create("DButton", pContainer)
+	local spec = vgui.Create("DButton", pContainer)
+	local widthd4 = width / 4
+	sdm.iTeam = 3
+	spec.iTeam = 1002
+	sdm.DoClick = teamClick
+	spec.DoClick = teamClick
+	sdm:SetWide(96)
+	spec:SetWide(96)
+	sdm:Dock(LEFT)
+	spec:Dock(RIGHT)
+	sdm:DockMargin(widthd4, 4, 0, 0)
+	spec:DockMargin(0, 4, widthd4, 0)
+	sdm:SetText("Deathmatch")
+	spec:SetText("Spectator")
 	text:SetAutoStretchVertical(true)
 	self.HelpFrame:InvalidateLayout(true)
 	self.HelpFrame:SizeToChildren(nil, true)
-	self.HelpFrame:SetTall(self.HelpFrame:GetTall() + 8)
+	self.HelpFrame:SetTall(self.HelpFrame:GetTall() + pContainer:GetTall() + 8)
 	self.HelpFrame:Center()
 	self.HelpFrame:MakePopup()
 end

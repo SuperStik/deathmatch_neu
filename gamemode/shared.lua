@@ -30,7 +30,7 @@ local combinemdls = {
 	["models/player/combine_super_soldier.mdl"] = true,
 	["models/player/police.mdl"] = true,
 	["models/player/police_fem.mdl"] = true,
-	["models/player/hostage/hostage_04.mdl"] = true -- easter egg ;^)
+	["models/player/hostage/hostage_04.mdl"] = true
 }
 
 function GM:PlayerNoClip(ply, state)
@@ -46,6 +46,7 @@ end
 function GM:CreateTeams()
 	TEAM_DEATHMATCH = 3
 	team.SetUp(TEAM_DEATHMATCH, "Deathmatch", Color(255, 255, 100))
+	team.SetColor(TEAM_SPECTATOR, Color(100, 255, 100))
 end
 
 function GM:IsModelCombine(mdl)

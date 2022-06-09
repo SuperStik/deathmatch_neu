@@ -57,12 +57,23 @@ net.Receive("SendTaunt", function(_, ply)
 	net.Broadcast()
 end)
 
+function GM:PlayerSpawnAsSpectator(pl)
+	pl:StripWeapons()
+	pl:SetTeam(TEAM_SPECTATOR)
+	pl:Spectate(OBS_MODE_ROAMING)
+end
+
 function GM:PlayerSpawn(pl, transiton)
-	if pl:Team() == TEAM_UNASSIGNED then
-		pl:SetTeam(TEAM_DEATHMATCH)
+	local pteam = pl:Team()
+	player_manager.SetPlayerClass(pl, "player_deathmatch")
+
+	if pteam == TEAM_SPECTATOR or pteam == TEAM_UNASSIGNED then
+		hook.Call("PlayerSpawnAsSpectator", self, pl)
+
+		return
 	end
 
-	player_manager.SetPlayerClass(pl, "player_deathmatch")
+	pl:UnSpectate()
 	player_manager.OnPlayerSpawn(pl, transiton)
 	player_manager.RunClass(pl, "Spawn")
 
@@ -75,19 +86,6 @@ function GM:PlayerSpawn(pl, transiton)
 	-- Set player model
 	hook.Call("PlayerSetModel", self, pl)
 end
-
-concommand.Add("dm_instantchange", function(ply)
-	hook.Run("PlayerSetModel", ply)
-	if customloadout:GetBool() then return end
-
-	if hook.Run("IsModelCombine", ply:GetModel()) then
-		ply:StripWeapon("weapon_crowbar")
-		ply:Give("weapon_stunstick")
-	else
-		ply:StripWeapon("weapon_stunstick")
-		ply:Give("weapon_crowbar")
-	end
-end, nil, "Set the player\'s model without respawning", FCVAR_CLIENTCMD_CAN_EXECUTE)
 
 function GM:Think()
 	if infinite:GetBool() then return end
@@ -104,7 +102,7 @@ function GM:StartRound()
 			timer.Create("CleanUpMap", clean:GetFloat(), 0, cleanMap)
 		end
 	else
-		timer.Remove("CleanUpMap")
+		timer.Remove"CleanUpMap"
 	end
 
 	BroadcastLua("hook.Run('StartRound')")
@@ -225,6 +223,55 @@ function GM:PlayerInit(ply)
 	end
 end
 
+function GM:PlayerCanPickupWeapon(ply)
+	return ply:Team() < 1001
+end
+
+function GM:PlayerRequestTeam(ply, teamid)
+	if team.Joinable(teamid) then
+		if hook.Call("PlayerCanJoinTeam", self, ply, teamid) then
+			hook.Call("PlayerJoinTeam", self, ply, teamid)
+		end
+	else
+		ply:ChatPrint("You can't join that team")
+	end
+end
+
+function GM:PlayerJoinTeam(ply, teamid)
+	local iOldTeam = ply:Team()
+
+	if ply:Alive() then
+		if iOldTeam == TEAM_SPECTATOR or iOldTeam == TEAM_UNASSIGNED then
+			ply:KillSilent()
+		else
+			ply:Kill()
+		end
+	end
+
+	ply:SetTeam(teamid)
+	ply.LastTeamSwitch = RealTime()
+	ply:SetFrags(0)
+	ply:SetDeaths(0)
+	self:OnPlayerChangedTeam(ply, iOldTeam, teamid)
+end
+
 net.Receive("PlayerInit", function(len, ply)
 	hook.Run("PlayerInit", ply)
 end)
+
+concommand.Add("dm_instantchange", function(ply)
+	hook.Run("PlayerSetModel", ply)
+	if customloadout:GetBool() then return end
+
+	if hook.Run("IsModelCombine", ply:GetModel()) then
+		ply:StripWeapon("weapon_crowbar")
+		ply:Give("weapon_stunstick")
+	else
+		ply:StripWeapon("weapon_stunstick")
+		ply:Give("weapon_crowbar")
+	end
+end, nil, "Set the player\'s model without respawning", FCVAR_CLIENTCMD_CAN_EXECUTE)
+
+concommand.Add("team_set", function(ply, _, args)
+	hook.Run("PlayerRequestTeam", ply, tonumber(args[1]))
+end, nil, "Set the player's team", FCVAR_CLIENTCMD_CAN_EXECUTE)
