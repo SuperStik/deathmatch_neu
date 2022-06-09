@@ -77,14 +77,14 @@ function GM:PlayerSpawn(pl, transiton)
 	player_manager.OnPlayerSpawn(pl, transiton)
 	player_manager.RunClass(pl, "Spawn")
 
+	-- Set player model
+	hook.Call("PlayerSetModel", self, pl)
+
 	-- If we are in transition, do not touch player's weapons
 	if not transiton then
 		-- Call item loadout function
 		hook.Call("PlayerLoadout", self, pl)
 	end
-
-	-- Set player model
-	hook.Call("PlayerSetModel", self, pl)
 end
 
 function GM:Think()

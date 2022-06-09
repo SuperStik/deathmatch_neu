@@ -64,11 +64,12 @@ function PLAYER:Loadout()
 		end
 	else
 		ply:Give("weapon_pistol")
-
-		if hook.Call("IsModelCombine", self, ply:GetModel()) then
+		if hook.Run("IsModelCombine", ply:GetModel()) then
 			ply:Give("weapon_stunstick")
+			print(true)
 		else
 			ply:Give("weapon_crowbar")
+			print(false)
 		end
 
 		ply:Give("weapon_smg1")
