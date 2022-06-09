@@ -77,6 +77,11 @@ function GM:PlayerSpawn(pl, transiton)
 	player_manager.OnPlayerSpawn(pl, transiton)
 	player_manager.RunClass(pl, "Spawn")
 
+	pl:AddFlags(FL_GODMODE)
+	timer.Simple(3,function()
+		pl:RemoveFlags(FL_GODMODE)
+	end)
+
 	-- Set player model
 	hook.Call("PlayerSetModel", self, pl)
 
