@@ -1,7 +1,7 @@
-local boxColor = Color(0, 0, 0, 128)
+local boxColor = NamedColor("BgColor")
 local deadColo = Color(255, 30, 40)
 local voiceCol = Color(61, 66, 212)
-local hudColor = Color(255, 235, 20)
+local hudColor = NamedColor("FgColor")
 
 local TauntList = {"npc_citizen.goodgod", "npc_citizen.likethat", "npc_citizen.ohno", "npc_citizen.heretheycome01", "npc_citizen.overhere01", "npc_citizen.gethellout", "npc_citizen.help01", "npc_citizen.hi01", "npc_citizen.ok01", "npc_citizen.incoming01"}
 
@@ -26,7 +26,7 @@ function GM:ShowHelp()
 	title:SetFont("DermaLarge")
 	title:SetContentAlignment(8)
 	title:SetAutoStretchVertical(true)
-	local text = Label("Here, your goal is to kill each other (pretty obvious because of the name). Pressing " .. input.LookupBinding("gm_showteam") .. " opens the panel to change your player model, and pressing " .. input.LookupBinding("gm_showspare1") .. " opens the taunt menu. You can press " .. input.LookupBinding("gm_showhelp"):upper() .. " to show this menu again. Press " .. input.LookupBinding("gm_showspare2") .. " to view the server options.", self.HelpFrame)
+	local text = Label("Here, your goal is to kill each other (pretty obvious because of the name). Pressing " .. input.LookupBinding("gm_showteam") .. " opens the panel to change your player model, and pressing " .. input.LookupBinding("gm_showspare1") .. " opens the taunt menu. You can press " .. input.LookupBinding("gm_showhelp"):upper() .. " to show this menu again. Press " .. input.LookupBinding("gm_showspare2") .. " to view the server options. To continue, press one of the two buttons below.", self.HelpFrame)
 	text:Dock(TOP)
 	text:SetWrap(true)
 	text:SetContentAlignment(8)
@@ -51,7 +51,7 @@ function GM:ShowHelp()
 	text:SetAutoStretchVertical(true)
 	self.HelpFrame:InvalidateLayout(true)
 	self.HelpFrame:SizeToChildren(nil, true)
-	self.HelpFrame:SetTall(self.HelpFrame:GetTall() + pContainer:GetTall() + 8)
+	self.HelpFrame:SetTall(self.HelpFrame:GetTall() + pContainer:GetTall() + 23)
 	self.HelpFrame:Center()
 	self.HelpFrame:MakePopup()
 end
@@ -139,4 +139,4 @@ net.Receive("SendTaunt", function()
 	hook.Run("OnPlayerTaunt", ply, net.ReadUInt(4), not ply:Alive())
 end)
 
-return boxColor
+return boxColor, hudColor

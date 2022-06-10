@@ -1,6 +1,6 @@
 include"shared.lua"
 include"cl_scoreboard.lua"
-local boxColor = include"cl_taunt.lua"
+local boxColor, hudColor = include"cl_taunt.lua"
 
 local convartbl = {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}
 
@@ -22,6 +22,13 @@ local replacetable
 local modelskin
 local modelpanel
 local bodygroups
+
+surface.CreateFont("TimerNumbers", {
+	font = "Verdana",
+	size = 32,
+	weight = 0,
+	additive = true
+})
 
 local function timeThink(self)
 	local timeleft = math.Round(GetGlobalInt("TimeLeft"))
@@ -122,15 +129,15 @@ function GM:Initialize()
 
 	if infinite:GetBool() then return end
 	self.GameTimer = vgui.CreateX("Panel", nil, "GameTimer")
-	self.GameTimer:SetSize(96, 48)
+	self.GameTimer:SetSize(100, 48)
 	self.GameTimer:DockPadding(4, 4, 4, 4)
 	self.GameTimer:CenterHorizontal()
 	self.GameTimer.Paint = gameTimerPaint
 	local roundtime = Label("ST:OP", self.GameTimer)
 	roundtime:Dock(FILL)
 	roundtime:SetContentAlignment(5)
-	roundtime:SetFont("DermaLarge")
-	roundtime:SetBright(true)
+	roundtime:SetFont("TimerNumbers")
+	roundtime:SetColor(hudColor)
 	roundtime.Think = timeThink
 end
 
