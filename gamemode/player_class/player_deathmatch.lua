@@ -125,7 +125,7 @@ function PLAYER:Death(inflictor, attacker)
 	medkit:SetPos(ply:GetPos())
 	medkit:Spawn()
 	local respawn = dm_medpacktimer:GetFloat()
-	if respawn <= 0 then return end
+	if respawn < 0 then return end
 	SafeRemoveEntityDelayed(medkit, respawn)
 end
 
