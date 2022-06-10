@@ -128,7 +128,7 @@ function GM:Initialize()
 	end
 
 	if infinite:GetBool() then return end
-	self.GameTimer = vgui.CreateX("Panel", nil, "GameTimer")
+	self.GameTimer = vgui.CreateX("Panel", GetHUDPanel(), "GameTimer")
 	self.GameTimer:SetSize(100, 48)
 	self.GameTimer:DockPadding(4, 4, 4, 4)
 	self.GameTimer:CenterHorizontal()
