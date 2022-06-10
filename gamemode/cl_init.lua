@@ -15,6 +15,9 @@ local cl_playercolor = CreateConVar("cl_playercolor", "0.24 0.34 0.41", {FCVAR_A
 local cl_playerskin = CreateConVar("cl_playerskin", "0", 131712, "The skin to use, if the model has any")
 local cl_playerbodygroups = CreateConVar("cl_playerbodygroups", "0", 131712, "The bodygroups to use, if the model has any")
 local cl_playermodel = GetConVar("cl_playermodel")
+local surface_SetTextPos = surface.SetTextPos
+local surface_SetTextColor = surface.SetTextColor
+local surface_DrawText = surface.DrawText
 local replacetable
 local modelskin
 local modelpanel
@@ -550,15 +553,15 @@ function GM:HUDDrawTargetID()
 	local y = MouseY + 30
 	local teamcol = self:GetTeamColor(trace.Entity)
 	-- The fonts internal drop shadow looks lousy with AA on
-	surface.SetTextPos(x + 1, y + 1)
-	surface.SetTextColor(0, 0, 0, 120)
-	surface.DrawText(text)
-	surface.SetTextPos(x + 2, y + 2)
-	surface.SetTextColor(0, 0, 0, 50)
-	surface.DrawText(text)
-	surface.SetTextPos(x, y)
-	surface.SetTextColor(teamcol.r, teamcol.g, teamcol.b)
-	surface.DrawText(text)
+	surface_SetTextPos(x + 1, y + 1)
+	surface_SetTextColor(0, 0, 0, 120)
+	surface_DrawText(text)
+	surface_SetTextPos(x + 2, y + 2)
+	surface_SetTextColor(0, 0, 0, 50)
+	surface_DrawText(text)
+	surface_SetTextPos(x, y)
+	surface_SetTextColor(teamcol.r, teamcol.g, teamcol.b)
+	surface_DrawText(text)
 
 	if showinfo:GetBool() then
 		text = trace.Entity:Health() .. "%"
@@ -567,20 +570,20 @@ function GM:HUDDrawTargetID()
 		surface.SetFont("TargetIDSmall")
 		w, h = surface.GetTextSize(text)
 		x = MouseX - w / 2
-		surface.SetTextPos(x + 1, y + 1)
-		surface.SetTextColor(0, 0, 0, 120)
-		surface.DrawText(text)
-		surface.SetTextPos(x + 1, y + 16)
-		surface.DrawText(armo)
-		surface.SetTextPos(x + 2, y + 2)
-		surface.SetTextColor(0, 0, 0, 50)
-		surface.DrawText(text)
-		surface.SetTextPos(x + 2, y + 17)
-		surface.DrawText(armo)
-		surface.SetTextPos(x, y)
-		surface.SetTextColor(teamcol.r, teamcol.g, teamcol.b)
-		surface.DrawText(text)
-		surface.SetTextPos(x, y + 15)
-		surface.DrawText(armo)
+		surface_SetTextPos(x + 1, y + 1)
+		surface_SetTextColor(0, 0, 0, 120)
+		surface_DrawText(text)
+		surface_SetTextPos(x + 1, y + 16)
+		surface_DrawText(armo)
+		surface_SetTextPos(x + 2, y + 2)
+		surface_SetTextColor(0, 0, 0, 50)
+		surface_DrawText(text)
+		surface_SetTextPos(x + 2, y + 17)
+		surface_DrawText(armo)
+		surface_SetTextPos(x, y)
+		surface_SetTextColor(teamcol.r, teamcol.g, teamcol.b)
+		surface_DrawText(text)
+		surface_SetTextPos(x, y + 15)
+		surface_DrawText(armo)
 	end
 end
