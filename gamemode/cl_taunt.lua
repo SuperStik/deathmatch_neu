@@ -5,6 +5,28 @@ local hudColor = NamedColor("FgColor")
 
 local TauntList = {"npc_citizen.goodgod", "npc_citizen.likethat", "npc_citizen.ohno", "npc_citizen.heretheycome01", "npc_citizen.overhere01", "npc_citizen.gethellout", "npc_citizen.help01", "npc_citizen.hi01", "npc_citizen.ok01", "npc_citizen.incoming01"}
 
+--[[---------------------------------------------------------
+	Name: gamemode:PlayerBindPress()
+-----------------------------------------------------------]]
+function GM:PlayerBindPress(ply, bind)
+	local textpos = string.find(bind, "slot")
+	local curtime = CurTime()
+
+	if ply:GetTauntTimer() > curtime and textpos == 1 and IsValid(self.TauntTextPanel) then
+		if ply:GetNextTaunt() <= curtime then
+			net.Start("SendTaunt")
+			net.WriteUInt(tonumber(string.Right(bind, 1)), 4)
+			net.SendToServer()
+		end
+
+		hook.Call("HideSpare1", self)
+
+		return true
+	end
+
+	return false
+end
+
 local function teamClick(pnl)
 	RunConsoleCommand("team_set", pnl.iTeam)
 	pnl:GetParent():GetParent():Close()

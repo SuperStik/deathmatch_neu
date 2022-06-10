@@ -491,28 +491,6 @@ function GM:ShowSpare2()
 end
 
 --[[---------------------------------------------------------
-	Name: gamemode:PlayerBindPress()
------------------------------------------------------------]]
-function GM:PlayerBindPress(ply, bind)
-	local textpos = string.find(bind, "slot")
-	local curtime = CurTime()
-
-	if ply:GetTauntTimer() > curtime and textpos == 1 and IsValid(self.TauntTextPanel) then
-		if ply:GetNextTaunt() <= curtime then
-			net.Start("SendTaunt")
-			net.WriteUInt(tonumber(string.Right(bind, 1)), 4)
-			net.SendToServer()
-		end
-
-		hook.Call("HideSpare1", self)
-
-		return true
-	end
-
-	return false
-end
-
---[[---------------------------------------------------------
 	Name: gamemode:StartRound()
 -----------------------------------------------------------]]
 function GM:StartRound()
