@@ -2,6 +2,7 @@ AddCSLuaFile()
 DEFINE_BASECLASS("player_default")
 local PLAYER = {}
 PLAYER.DisplayName = "Deathmatch Class"
+PLAYER.SlowWalkSpeed = 100 -- How fast to move when slow-walking (+WALK)
 PLAYER.WalkSpeed = 200 -- How fast to move when not running
 PLAYER.RunSpeed = 320 -- How fast to move when running
 PLAYER.JumpPower = 210 -- How powerful our jump should be
