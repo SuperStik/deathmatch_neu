@@ -1,6 +1,7 @@
 AddCSLuaFile"cl_init.lua"
 AddCSLuaFile"cl_scoreboard.lua"
 AddCSLuaFile"cl_taunt.lua"
+AddCSLuaFile"cl_editor.lua"
 include"shared.lua"
 util.AddNetworkString"SendTaunt"
 util.AddNetworkString"PlayerInit"
