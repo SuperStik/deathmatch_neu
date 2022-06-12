@@ -209,6 +209,10 @@ cvars.AddChangeCallback("dm_infinite", function()
 	hook.Run("StartRound")
 end)
 
+cvars.AddChangeCallback("gmod_suit", function(convar, _, val)
+	PrintMessage(HUD_PRINTTALK, "Server cvar '" .. convar .. "' changed to " .. val)
+end)
+
 function GM:ShutDown()
 	RunConsoleCommand("sk_plr_dmg_crowbar", "10")
 	RunConsoleCommand("sk_plr_dmg_stunstick", "10")
