@@ -29,7 +29,7 @@ local dm_grenades = GetConVar"dm_grenades"
 local dm_allplayermodels = GetConVar"dm_allplayermodels"
 local dm_medpacktimer = GetConVar"dm_medpacktimer"
 local customloadout = GetConVar"dm_customloadout"
-local glives = GetConVar"dm_lives"
+local glives = CreateConVar("dm_lives", "0", 8576, "If greater than 0, the every player will have a set amount of lives")
 
 function PLAYER:SetupDataTables()
 	self.Player:NetworkVar("Bool", 0, "Host") --shit way to see who is listen server host
