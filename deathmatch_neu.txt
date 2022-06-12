@@ -77,6 +77,16 @@
 		}
 		8
 		{
+			"name"		"gmod_suit"
+			"text"		"gmod_suit"
+			"help"		"Set to non zero to enable Half-Life 2 aux suit power stuff."
+			"type"		"CheckBox"
+			"default"	"0"
+			"singleplayer"	"1"
+			"dontcreate"	"1"
+		}
+		9
+		{
 			"name"	"dm_showinfo"
 			"text"	"Show HUD info"
 			"help"	"Show HUD info when hovering over a player"

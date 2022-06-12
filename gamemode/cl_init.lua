@@ -65,10 +65,10 @@ function GM:InitPostEntity()
 end
 
 local function layout(pnl)
-	local txt = pnl:GetChild(0)
+	local num = pnl:GetChild(0)
 	local label = pnl:GetChild(1)
-	txt:SetSize(48, 16)
-	txt:SetPos(0, 0)
+	num:SetSize(48, 16)
+	num:SetPos(0, 0)
 	label:SetX(57)
 	label:SizeToContents()
 end
@@ -82,8 +82,16 @@ local function guardrail(pnl, txt)
 	pnl:OnValueChange(pnl:GetText())
 end
 
-local function TextEntryLabel(parent, convar, text)
-	local tlbl = vgui.CreateX("Panel", parent, "DTextEntryLabel")
+local function numwThink(pnl)
+	pnl:ConVarNumberThink()
+
+	if pnl.mouseAnchor then
+		pnl:SetValue(pnl.valAnchor + pnl.mouseAnchor - gui.MouseY())
+	end
+end
+
+local function NumberWangLabel(parent, convar, text)
+	local tlbl = vgui.CreateX("Panel", parent, "NumberWangLabel")
 	local ishost = LocalPlayer():GetHost()
 	tlbl:SetEnabled(ishost)
 	tlbl:SetAlpha(ishost and 255 or 75)
@@ -91,17 +99,19 @@ local function TextEntryLabel(parent, convar, text)
 	tlbl:Dock(TOP)
 	tlbl:DockMargin(0, 0, 0, 8)
 	tlbl.PerformLayout = layout
-	local txt = tlbl:Add("DTextEntry")
-	txt:SetEnabled(ishost)
-	txt:SetEditable(ishost)
-	txt:SetSize(48, 16)
-	txt:SetConVar(convar)
-	txt:SetNumeric(true)
-	txt.OnEnter = guardrail
+	local num = tlbl:Add("DNumberWang")
+	num:SetEnabled(ishost)
+	num:SetEditable(ishost)
+	num:SetSize(48, 16)
+	num:SetConVar(convar)
+	num.OnEnter = guardrail
+	num.Think = numwThink
 	local label = Label(text, tlbl)
 	label:SetEnabled(ishost)
 	label:SetX(57)
 	label:SizeToContents()
+	tlbl.NumberInput = num
+	tlbl.Label = label
 
 	return tlbl
 end
@@ -209,8 +219,8 @@ function GM:ShowSpare2()
 		self.OptionsConf = vgui.Create("DFrame", nil, "OptionsConf")
 		self.OptionsConf:SetSize(256, ScrH())
 		self.OptionsConf:SetTitle("Game Options")
-		TextEntryLabel(self.OptionsConf, "dm_timer", "Round timer")
-		TextEntryLabel(self.OptionsConf, "dm_medpacktimer", "Medpack timer")
+		NumberWangLabel(self.OptionsConf, "dm_timer", "Round timer").NumberInput:SetMax(3600)
+		NumberWangLabel(self.OptionsConf, "dm_medpacktimer", "Medpack timer").NumberInput:SetMin(-1)
 		checkbox(self.OptionsConf, "dm_infinite", "Infinite mode")
 		checkbox(self.OptionsConf, "dm_weapons", "Spawn with weapons")
 		checkbox(self.OptionsConf, "dm_grenades", "Spawn with grenades").Think = checkThink
@@ -222,6 +232,7 @@ function GM:ShowSpare2()
 		button.Think = buttonThink
 		button.DoClick = buttonClick
 		checkbox(self.OptionsConf, "dm_allplayermodels", "Allow all player models")
+		checkbox(self.OptionsConf, "gmod_suit", "#gmod_suit")
 		checkbox(self.OptionsConf, "dm_adminnoclip", "Admin noclip")
 		local check = self.OptionsConf:Add("DCheckBoxLabel")
 		check:SetEnabled(LocalPlayer():GetHost())
