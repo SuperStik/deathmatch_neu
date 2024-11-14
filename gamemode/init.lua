@@ -150,6 +150,11 @@ function GM:EndRound()
 				resistance = resistance + v:Frags()
 			end
 		end
+		if combine == resistance then
+			PrintMessage(HUD_PRINTTALK, "Both teams tied!")
+		else
+			PrintMessage(HUD_PRINTTALK, "Team " .. ((combine - resistance) > 0 and "Resistance" or "Combine") .. " won!")
+		end
 	else
 		for k, v in player.Iterator() do
 			v:Lock()
