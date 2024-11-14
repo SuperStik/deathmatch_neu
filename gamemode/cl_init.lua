@@ -3,7 +3,7 @@ include"cl_scoreboard.lua"
 local boxColor, hudColor = include"cl_taunt.lua"
 include"cl_editor.lua"
 
-local convartbl = {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}
+local convartbl = bit.bor(FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED)
 
 local infinite = CreateConVar("dm_infinite", "1", convartbl, "If set, the game will have an infinite round, and the round timer will act as a cleanup timer")
 local dm_weapons = CreateConVar("dm_weapons", "1", convartbl, "If enabled, each player will receive weapons on each spawn")
@@ -63,6 +63,7 @@ end
 function GM:InitPostEntity()
 	net.Start("PlayerInit")
 	net.SendToServer()
+	self.TeamBased = GetGlobal2Bool("TeamPlay")
 end
 
 local function layout(pnl)

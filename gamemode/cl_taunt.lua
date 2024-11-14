@@ -55,20 +55,44 @@ function GM:ShowHelp()
 	local pContainer = vgui.CreateX("Panel", self.HelpFrame, "ButtonContainer")
 	pContainer:Dock(TOP)
 	pContainer:SetTall(30)
-	local sdm = vgui.Create("DButton", pContainer)
-	local spec = vgui.Create("DButton", pContainer)
-	local widthd4 = width / 4
-	sdm.iTeam = 3
+
+	local spec = vgui.Create("DButton", pContainer, "SpectatorBtn")	
+	local bwidth
+	if self.TeamBased then
+		bwidth = width / 8
+		local blu = vgui.Create("DButton", pContainer, "BluTeamBtn")
+		local red = vgui.Create("DButton", pContainer, "RedTeamBtn")
+		blu.iTeam = TEAM_COMBINE
+		red.iTeam = TEAM_RESISTANCE
+		blu.DoClick = teamClick
+		red.DoClick = teamClick
+		blu:SetWide(96)
+		red:SetWide(96)
+		blu:Dock(LEFT)
+		red:Dock(FILL)
+		blu:DockMargin(bwidth, 4, 0, 0)
+		bwidthd = bwidth * 0.7
+		red:DockMargin(bwidthd, 4, bwidthd, 0)
+		red:CenterHorizontal()
+		blu:SetText("Combine")
+		red:SetText("Resistance")
+	else
+		bwidth = width / 4
+		local sdm = vgui.Create("DButton", pContainer, "TeamlessBtn")
+		sdm.iTeam = TEAM_DEATHMATCH
+		sdm.DoClick = teamClick
+		sdm:SetWide(96)
+		sdm:Dock(LEFT)
+		sdm:DockMargin(bwidth, 4, 0, 0)
+		sdm:SetText("Deathmatch")
+		
+	end
+	
 	spec.iTeam = 1002
-	sdm.DoClick = teamClick
 	spec.DoClick = teamClick
-	sdm:SetWide(96)
 	spec:SetWide(96)
-	sdm:Dock(LEFT)
 	spec:Dock(RIGHT)
-	sdm:DockMargin(widthd4, 4, 0, 0)
-	spec:DockMargin(0, 4, widthd4, 0)
-	sdm:SetText("Deathmatch")
+	spec:DockMargin(0, 4, bwidth, 0)
 	spec:SetText("Spectator")
 	text:SetAutoStretchVertical(true)
 	self.HelpFrame:InvalidateLayout(true)

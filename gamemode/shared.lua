@@ -21,6 +21,7 @@ GM.Author = "Stik"
 GM.Email = ""
 GM.Website = ""
 GM.IsDeathmatchDerived = true
+
 local adminfly = CreateConVar("dm_adminnoclip", "1", 8576, "Allow admins to noclip")
 local playerfly = CreateConVar("dm_playernoclip", "0", 8576, "Allow players to noclip")
 
@@ -44,7 +45,11 @@ function GM:PlayerNoClip(ply, state)
 end
 
 function GM:CreateTeams()
+	TEAM_COMBINE = 1
+	TEAM_RESISTANCE = 2
 	TEAM_DEATHMATCH = 3
+	team.SetUp(TEAM_COMBINE, "Combine", Color(100, 100, 255))
+	team.SetUp(TEAM_RESISTANCE, "Resistance", Color(255, 100, 100))
 	team.SetUp(TEAM_DEATHMATCH, "Deathmatch", Color(255, 255, 100))
 	team.SetColor(TEAM_SPECTATOR, Color(100, 255, 100))
 end

@@ -6,8 +6,13 @@ include"shared.lua"
 util.AddNetworkString"SendTaunt"
 util.AddNetworkString"PlayerInit"
 local clean = GetConVar"dm_timer"
+GM.TeamBased = GetConVar"mp_teamplay":GetBool()
+print("Team Mode", GM.TeamBased)
+SetGlobal2Bool("TeamPlay", GM.TeamBased)
+
 local infinite = GetConVar"dm_infinite"
 local customloadout = GetConVar"dm_customloadout"
+local teammode = GetConVar"mp_teamplay"
 
 local tauntList = {"npc_citizen.goodgod", "npc_citizen.likethat", "npc_citizen.ohno", "npc_citizen.heretheycome01", "npc_citizen.overhere01", "npc_citizen.gethellout", "npc_citizen.help01", "npc_citizen.hi0", "npc_citizen.ok0", "npc_citizen.incoming02"}
 
@@ -133,22 +138,36 @@ function GM:EndRound()
 	local winner
 	BroadcastLua("hook.Run('EndRound')")
 
-	for k, v in player.Iterator() do
-		v:Lock()
-		local frags = v:Frags()
-		local deaths = v:Deaths()
+	if teammode:GetBool() then
+		local combine, resistance
+		for k, v in player.Iterator() do
+			v:Lock()
 
-		if frags > highest then
-			winner = v
-			highest = frags
-			lowest = deaths < lowest and deaths or lowest
-		elseif frags == highest then
-			winner = deaths < lowest and v or winner
-			lowest = deaths < lowest and deaths or lowest
+			local team = v:Team()
+			if team == TEAM_COMBINE then
+				combine = combine + v:Frags()
+			elseif team == TEAM_RESISTANCE then
+				resistance = resistance + v:Frags()
+			end
 		end
+	else
+		for k, v in player.Iterator() do
+			v:Lock()
+			local frags = v:Frags()
+			local deaths = v:Deaths()
+
+			if frags > highest then
+				winner = v
+				highest = frags
+				lowest = deaths < lowest and deaths or lowest
+			elseif frags == highest then
+				winner = deaths < lowest and v or winner
+				lowest = deaths < lowest and deaths or lowest
+			end
+		end
+		PrintMessage(HUD_PRINTTALK, "Player " .. winner:Nick() .. " won with " .. winner:Frags() .. " frags!")
 	end
 
-	PrintMessage(HUD_PRINTTALK, "Player " .. winner:Nick() .. " won with " .. winner:Frags() .. " frags!")
 	timer.Simple(5, self.StartRound)
 end
 
