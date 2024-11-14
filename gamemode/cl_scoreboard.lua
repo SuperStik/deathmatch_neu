@@ -282,13 +282,12 @@ local SCORE_BOARD = {
 	Think = function(self, w, h)
 		local lives = maxlives:GetInt()
 		self.Name:SetText(GetHostName())
+		self.NumPlayers:SetText(player.GetCount() .. "/" .. MaxPlayers .. " " .. playersL .. playersR)
 		--
 		-- Loop through each player, and if one doesn't have a score entry - create it.
 		--
-		local plyrs = player.GetAll()
-		self.NumPlayers:SetText(#plyrs .. "/" .. MaxPlayers .. " " .. playersL .. playersR)
 
-		for id, pl in pairs(plyrs) do
+		for id, pl in player.Iterator() do
 			if IsValid(pl.ScoreEntry) then continue end
 			pl.ScoreEntry = vgui.CreateFromTable(PLAYER_LINE, pl.ScoreEntry)
 			pl.ScoreEntry:Setup(pl)

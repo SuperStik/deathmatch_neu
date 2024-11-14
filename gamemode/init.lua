@@ -115,7 +115,7 @@ function GM:StartRound()
 	BroadcastLua("hook.Run('StartRound')")
 	cleanMap("Starting round...", true)
 
-	for k, v in ipairs(player.GetAll()) do
+	for k, v in player.Iterator() do
 		v:UnLock()
 		v:StripAmmo()
 		v:StripWeapons()
@@ -133,7 +133,7 @@ function GM:EndRound()
 	local winner
 	BroadcastLua("hook.Run('EndRound')")
 
-	for k, v in ipairs(player.GetAll()) do
+	for k, v in player.Iterator() do
 		v:Lock()
 		local frags = v:Frags()
 		local deaths = v:Deaths()
