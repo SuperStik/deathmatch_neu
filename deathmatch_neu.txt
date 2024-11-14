@@ -38,6 +38,13 @@
 		}
 		4
 		{
+			"name"	"mp_teamplay"
+			"text"	"Team Play"
+			"type"	"CheckBox"
+			"default"	"0"
+		}
+		5
+		{
 			"name"	"dm_weapons"
 			"text"	"Give weapons on spawn"
 			"help"	"If enabled, each player will receive weapons on each spawn"
