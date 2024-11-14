@@ -26,7 +26,7 @@ local function timeThink(self)
 end
 
 local function gameTimerPaint(pnl, w, h)
-	draw.RoundedBoxEx(8, 0, 0, w, h, boxColor, nil, nil, true, true)
+	draw.RoundedBox(8, 0, 0, w, h, boxColor)
 end
 
 function GetHostName()
@@ -47,11 +47,12 @@ function GM:Initialize()
 	self.GameTimer:SetSize(100, 48)
 	self.GameTimer:DockPadding(4, 4, 4, 4)
 	self.GameTimer:CenterHorizontal()
+	self.GameTimer:SetY(ScreenScaleH(438))
 	self.GameTimer.Paint = gameTimerPaint
 	local roundtime = Label("ST:OP", self.GameTimer)
 	roundtime:Dock(FILL)
 	roundtime:SetContentAlignment(5)
-	roundtime:SetFont("TimerNumbers")
+	roundtime:SetFont"TimerNumbers"
 	roundtime:SetColor(hudColor)
 	roundtime.Think = timeThink
 end
