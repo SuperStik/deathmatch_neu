@@ -266,6 +266,10 @@ function GM:PlayerJoinTeam(ply, teamid)
 	self:OnPlayerChangedTeam(ply, iOldTeam, teamid)
 end
 
+function GM:CanPlayerSuicide(ply) 
+	return ply:Team() ~= TEAM_SPECTATOR
+end
+
 net.Receive("PlayerInit", function(len, ply)
 	hook.Run("PlayerInit", ply)
 end)
