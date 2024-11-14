@@ -1,0 +1,5 @@
+# macOS specific junk
+.DS_Store
+
+# no vim swp files please
+*.swp
